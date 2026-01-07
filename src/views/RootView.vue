@@ -6,7 +6,7 @@ Suspense
 </template>
 
 <script setup lang="ts">
-import { sharedStore } from "@vuebro/shared";
+import { sharedStore } from "@skaldapp/shared";
 import { computed } from "vue";
 
 import { mainStore } from "@/stores/main";

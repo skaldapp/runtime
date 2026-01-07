@@ -11,7 +11,7 @@ div(
 </template>
 
 <script setup lang="ts">
-import { sharedStore } from "@vuebro/shared";
+import { sharedStore } from "@skaldapp/shared";
 import { vElementVisibility } from "@vueuse/components";
 import { computed, onUnmounted, toRef, watchEffect } from "vue";
 

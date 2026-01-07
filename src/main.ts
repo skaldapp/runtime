@@ -1,10 +1,10 @@
-import type { TPage } from "@vuebro/shared";
+import type { TPage } from "@skaldapp/shared";
 
+import presets from "@skaldapp/configs/uno/presets";
+import { fetching, sharedStore } from "@skaldapp/shared";
 import { InferSeoMetaPlugin } from "@unhead/addons";
 import { createHead } from "@unhead/vue/client";
 import initUnocssRuntime from "@unocss/runtime";
-import presets from "@vuebro/configs/uno/presets";
-import { fetching, sharedStore } from "@vuebro/shared";
 import { toReactive, useScroll } from "@vueuse/core";
 import { consola } from "consola/browser";
 import {
@@ -36,7 +36,7 @@ const app = createApp(vueApp),
   { pathname } = new URL(document.baseURI);
 
 consola.info(
-  "👊 VueBro / https://github.com/vuebro / runtime ver.:",
+  "⛰ Skald / https://github.com/skaldapp / runtime ver.:",
   __APP_VERSION__,
 );
 

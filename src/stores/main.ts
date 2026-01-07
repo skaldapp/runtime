@@ -1,5 +1,5 @@
 import type { MarkdownItEnv } from "@mdit-vue/types";
-import type { TPage } from "@vuebro/shared";
+import type { TPage } from "@skaldapp/shared";
 import type { UnocssPluginContext } from "unocss";
 import type { RouteRecordNameGeneric } from "vue-router";
 
@@ -28,9 +28,9 @@ import { sub } from "@mdit/plugin-sub";
 import { sup } from "@mdit/plugin-sup";
 import { tasklist } from "@mdit/plugin-tasklist";
 import { ElementTransform } from "@nolebase/markdown-it-element-transform";
+import loadModule from "@skaldapp/loader-sfc";
+import { fetching, sharedStore } from "@skaldapp/shared";
 import transformerDirectives from "@unocss/transformer-directives";
-import loadModule from "@vuebro/loader-sfc";
-import { fetching, sharedStore } from "@vuebro/shared";
 import MagicString from "magic-string";
 import MarkdownIt from "markdown-it";
 import { full } from "markdown-it-emoji";

@@ -3,10 +3,10 @@ router-view(v-slot="{ Component }")
   component(:is="Component", :id="nodes[0]?.id")
 </template>
 <script setup lang="ts">
-import type { TPage } from "@vuebro/shared";
+import type { TPage } from "@skaldapp/shared";
 
+import { sharedStore } from "@skaldapp/shared";
 import { useHead } from "@unhead/vue";
-import { sharedStore } from "@vuebro/shared";
 import { computed, toRefs } from "vue";
 import { useRoute } from "vue-router";
 

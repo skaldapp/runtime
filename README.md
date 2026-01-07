@@ -1,11 +1,11 @@
-# VueBro Runtime
+# Skald Runtime
 
-VueBro Runtime is a Vue.js-based runtime environment that serves as the execution layer for VueBro applications. This project provides the core infrastructure to render and manage Vue applications with advanced features like dynamic component loading, SEO optimization, and intersection observer tracking.
+Skald Runtime is a Vue.js-based runtime environment that serves as the execution layer for skald applications. This project provides the core infrastructure to render and manage Vue applications with advanced features like dynamic component loading, SEO optimization, and intersection observer tracking.
 
 ## Features
 
 - **Vue 3 Powered**: Built on top of Vue 3 with Composition API
-- **Dynamic Component Loading**: Components are dynamically loaded using the `@vuebro/loader-sfc` package
+- **Dynamic Component Loading**: Components are dynamically loaded using the `@skaldapp/loader-sfc` package
 - **SEO Optimized**: Built-in SEO meta management using `@unhead/vue`
 - **Intersection Tracking**: Uses Intersection Observer API to track component visibility
 - **UnoCSS Integration**: Utility-first CSS styling with UnoCSS
@@ -29,7 +29,7 @@ The runtime follows a monolithic architecture with several key components:
 - UnoCSS runtime for styling
 - VueUse for composable utilities
 - Iconify for icon management
-- @vuebro/shared and @vuebro/loader-sfc for ecosystem integration
+- @skaldapp/shared and @skaldapp/loader-sfc for ecosystem integration
 
 ## Building and Running
 
@@ -52,14 +52,14 @@ The project uses Vite for bundling with a custom configuration:
 - Uses `vite-plugin-static-copy` to copy external dependencies to the dist folder
 - Generates a manifest file that includes external dependencies
 
-## Integration with VueBro Ecosystem
+## Integration with skald Ecosystem
 
-This runtime is designed to work with the broader VueBro ecosystem:
+This runtime is designed to work with the broader skald ecosystem:
 
 - Receives data from `index.json` and `fonts.json` files
-- Uses `@vuebro/shared` for common utilities
+- Uses `@skaldapp/shared` for common utilities
 - Dynamic components loaded from `./pages/` directory
-- Uses `@vuebro/configs` for shared Vite, TypeScript, and UnoCSS configurations
+- Uses `@skaldapp/configs` for shared Vite, TypeScript, and UnoCSS configurations
 
 ## File Structure
 

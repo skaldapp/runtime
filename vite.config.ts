@@ -1,12 +1,12 @@
 import type { HtmlTagDescriptor } from "vite";
 
 import inject from "@rollup/plugin-inject";
-import config from "@vuebro/configs/vite";
+import config from "@skaldapp/configs/vite";
 import { readFileSync, writeFileSync } from "node:fs";
 import { defineConfig, mergeConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
-const external = ["vue", "vue-router", "@vuebro/loader-sfc"],
+const external = ["vue", "vue-router", "@skaldapp/loader-sfc"],
   targets = external.map((key, i) => ({
     dest: "assets",
     file: "",

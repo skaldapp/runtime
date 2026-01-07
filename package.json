@@ -1,12 +1,12 @@
 {
   "$schema": "https://www.schemastore.org/package",
-  "name": "@vuebro/runtime",
+  "name": "@skaldapp/runtime",
   "version": "2.1.11",
-  "description": "Vue.js-based runtime for VueBro applications with dynamic loading, SEO optimization, and intersection observer tracking.",
+  "description": "Vue.js-based runtime for skald applications with dynamic loading, SEO optimization, and intersection observer tracking.",
   "keywords": [
     "vue",
     "runtime",
-    "vuebro",
+    "skald",
     "vue3",
     "composition-api",
     "seo",
@@ -14,13 +14,13 @@
     "unocss",
     "dynamic-components"
   ],
-  "homepage": "https://github.com/vuebro/runtime#readme",
+  "homepage": "https://github.com/skaldapp/runtime#readme",
   "bugs": {
-    "url": "https://github.com/vuebro/runtime/issues"
+    "url": "https://github.com/skaldapp/runtime/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vuebro/runtime.git"
+    "url": "git+https://github.com/skaldapp/runtime.git"
   },
   "license": "AGPL-3.0-or-later",
   "author": "Jerry Bruwes <jbruwes@gmail.com> (https://jbruwes.github.io)",
@@ -32,7 +32,7 @@
     "build": "vue-tsc && vite build",
     "lint": "eslint ."
   },
-  "prettier": "@vuebro/configs/prettierrc",
+  "prettier": "@skaldapp/configs/prettierrc",
   "dependencies": {
     "@highlightjs/cdn-assets": "^11.11.1",
     "@mdit-vue/plugin-component": "^3.0.2",
@@ -59,12 +59,12 @@
     "@mdit/plugin-sup": "^0.23.0",
     "@mdit/plugin-tasklist": "^0.22.2",
     "@nolebase/markdown-it-element-transform": "^2.18.2",
+    "@skaldapp/loader-sfc": "^2.4.11",
+    "@skaldapp/shared": "^1.2.25",
     "@unhead/addons": "^2.1.1",
     "@unhead/vue": "^2.1.1",
     "@unocss/runtime": "^66.5.12",
     "@unocss/transformer-directives": "^66.5.12",
-    "@vuebro/loader-sfc": "^2.4.9",
-    "@vuebro/shared": "^1.2.23",
     "@vueuse/components": "^14.1.0",
     "@vueuse/core": "^14.1.0",
     "consola": "^3.4.2",
@@ -79,13 +79,13 @@
   "devDependencies": {
     "@mdit-vue/types": "^3.0.2",
     "@rollup/plugin-inject": "^5.0.5",
+    "@skaldapp/configs": "^1.2.41",
     "@types/markdown-it-emoji": "^3.0.1",
     "@types/node": "^25.0.3",
-    "@vuebro/configs": "^1.2.37",
     "buffer": "^6.0.3",
     "eslint": "^9.39.2",
     "unocss": "^66.5.12",
-    "vite": "^7.3.0",
+    "vite": "^7.3.1",
     "vite-plugin-static-copy": "^3.1.4"
   }
 }
