@@ -6,13 +6,12 @@ import { InferSeoMetaPlugin } from "@unhead/addons";
 import { createHead } from "@unhead/vue/client";
 import initUnocssRuntime from "@unocss/runtime";
 import { toReactive, useScroll } from "@vueuse/core";
-import { consola } from "consola/browser";
 import {
   AliasSortingPlugin,
   CanonicalPlugin,
   TemplateParamsPlugin,
 } from "unhead/plugins";
-import { createApp, toRefs } from "vue";
+import { createApp, toRef, toRefs } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 import vueApp from "@/App.vue";
@@ -25,17 +24,22 @@ import rootView from "@/views/RootView.vue";
 import "@highlightjs/cdn-assets/styles/default.css";
 import "katex/dist/katex.css";
 
-let routeName = $toRef(mainStore, "routeName");
+/* -------------------------------------------------------------------------- */
 
-const { $these, that } = $(toRefs(mainStore));
-const { kvNodes, nodes } = $(toRefs(sharedStore));
+const { $these, that } = toRefs(mainStore),
+  { intersecting, promises, root } = mainStore,
+  { kvNodes, nodes } = toRefs(sharedStore),
+  { pathname } = new URL(document.baseURI);
+
+/* -------------------------------------------------------------------------- */
 
 const app = createApp(vueApp),
   index = (await fetching("index.json")) ?? [],
-  { intersecting, promises, root } = mainStore,
-  { pathname } = new URL(document.baseURI);
+  routeName = toRef(mainStore, "routeName");
 
-consola.info(
+/* -------------------------------------------------------------------------- */
+
+console.info(
   "⛰ Skald / https://github.com/skaldapp / runtime ver.:",
   __APP_VERSION__,
 );
@@ -54,7 +58,7 @@ await initUnocssRuntime({
     const router = createRouter({
         history: createWebHistory(pathname),
         routes: [
-          ...(nodes as TPage[])
+          ...(nodes.value as TPage[])
             .filter(({ path }) => path !== undefined)
             .map(({ id: name, to: path = "/" }) => ({
               children: [{ component: pageView, name, path: "" }],
@@ -65,11 +69,11 @@ await initUnocssRuntime({
         ],
         scrollBehavior: async ({ hash, name }) => {
           if (name) {
-            routeName = name;
+            routeName.value = name;
             if (scrollLock) scrollLock = false;
             else {
               const { index, parent: { frontmatter: { flat } = {} } = {} } =
-                that ?? {};
+                that.value ?? {};
               toggleObserver(true);
               await root.promise;
               await Promise.all(
@@ -97,8 +101,8 @@ await initUnocssRuntime({
       { x, y } = $(
         useScroll(window, {
           onStop: () => {
-            const [first] = $these,
-              [root] = nodes;
+            const [first] = $these.value,
+              [root] = nodes.value;
             if (root && first) {
               const {
                 $children: [{ id } = {}],
@@ -109,9 +113,9 @@ await initUnocssRuntime({
                   : ([...intersecting.entries()].find(
                       ([, value]) => value,
                     )?.[0] ?? first.id);
-              if (name !== routeName) {
+              if (name !== routeName.value) {
                 scrollLock = true;
-                router.push({ name }).catch(consola.error);
+                router.push({ name }).catch(console.error);
               }
             }
           },
