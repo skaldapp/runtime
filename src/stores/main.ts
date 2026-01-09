@@ -34,6 +34,7 @@ import transformerDirectives from "@unocss/transformer-directives";
 import MagicString from "magic-string";
 import MarkdownIt from "markdown-it";
 import { full } from "markdown-it-emoji";
+import twemoji from "twemoji";
 import { computed, defineAsyncComponent, reactive, toRefs } from "vue";
 
 /* -------------------------------------------------------------------------- */
@@ -193,3 +194,8 @@ ${styles
     ),
     uno: {},
   });
+
+/* -------------------------------------------------------------------------- */
+
+md.renderer.rules["emoji"] = (tokens, idx) =>
+  tokens[idx] ? twemoji.parse(tokens[idx].content) : "";
