@@ -98,29 +98,27 @@ await initUnocssRuntime({
           return false;
         },
       }),
-      { x, y } = $(
-        useScroll(window, {
-          onStop: () => {
-            const [first] = $these.value,
-              [root] = nodes.value;
-            if (root && first) {
-              const {
-                $children: [{ id } = {}],
-              } = root;
-              const name =
-                !Math.floor(x) && !Math.floor(y) && first.id === id
-                  ? root.id
-                  : ([...intersecting.entries()].find(
-                      ([, value]) => value,
-                    )?.[0] ?? first.id);
-              if (name !== routeName.value) {
-                scrollLock = true;
-                router.push({ name }).catch(console.error);
-              }
+      { x, y } = useScroll(window, {
+        onStop: () => {
+          const [first] = $these.value,
+            [root] = nodes.value;
+          if (root && first) {
+            const {
+              $children: [{ id } = {}],
+            } = root;
+            const name =
+              !Math.floor(x.value) && !Math.floor(y.value) && first.id === id
+                ? root.id
+                : ([...intersecting.entries()].find(
+                    ([, value]) => value,
+                  )?.[0] ?? first.id);
+            if (name !== routeName.value) {
+              scrollLock = true;
+              router.push({ name }).catch(console.error);
             }
-          },
-        }),
-      );
+          }
+        },
+      });
 
     router.beforeEach(({ path }) =>
       path !== decodeURI(path) ? decodeURI(path) : undefined,
