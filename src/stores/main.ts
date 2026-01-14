@@ -153,7 +153,6 @@ const $frontmatter = ${JSON.stringify(env.frontmatter ?? {})};
         await Promise.all(
           styles.map(
             async ({ contentStripped }) =>
-              // @ts-expect-error a temporary fix due to the unocss bug
               await transform(contentStripped, id, {
                 uno,
               } as UnocssPluginContext),
