@@ -10,21 +10,11 @@ import { useHead } from "@unhead/vue";
 import { computed, toRefs } from "vue";
 import { useRoute } from "vue-router";
 
-/* -------------------------------------------------------------------------- */
-
-const route = useRoute();
-
-/* -------------------------------------------------------------------------- */
-
-const { kvNodes, nodes } = toRefs(sharedStore);
-
-/* -------------------------------------------------------------------------- */
-
+const route = useRoute(),
+  { kvNodes, nodes } = toRefs(sharedStore);
 const input = computed(
   () => kvNodes.value[route.name as keyof TPage]?.frontmatter,
 );
-
-/* -------------------------------------------------------------------------- */
 
 useHead(nodes.value[0]?.frontmatter, { mode: "client" });
 useHead(input, { mode: "client" });
