@@ -24,20 +24,13 @@ import rootView from "@/views/RootView.vue";
 import "@highlightjs/cdn-assets/styles/default.css";
 import "katex/dist/katex.css";
 
-/* -------------------------------------------------------------------------- */
-
-const { $these, that } = toRefs(mainStore),
+const app = createApp(vueApp),
+  index = (await fetching("index.json")) ?? [],
+  routeName = toRef(mainStore, "routeName"),
+  { $these, that } = toRefs(mainStore),
   { intersecting, promises, root } = mainStore,
   { kvNodes, nodes } = toRefs(sharedStore),
   { pathname } = new URL(document.baseURI);
-
-/* -------------------------------------------------------------------------- */
-
-const app = createApp(vueApp),
-  index = (await fetching("index.json")) ?? [],
-  routeName = toRef(mainStore, "routeName");
-
-/* -------------------------------------------------------------------------- */
 
 console.info(
   "⛰ Skald / https://github.com/skaldapp / runtime ver.:",
