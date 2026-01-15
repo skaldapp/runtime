@@ -12,21 +12,13 @@ div(
 <script setup lang="ts">
 import { sharedStore } from "@skaldapp/shared";
 import { vElementVisibility } from "@vueuse/components";
-import { computed, onUnmounted, toRef, watchEffect } from "vue";
+import { computed, onUnmounted, toRefs, watchEffect } from "vue";
 
 import { mainStore, promiseWithResolvers } from "@/stores/main";
 
-/* -------------------------------------------------------------------------- */
-
-const $these = toRef(mainStore, "$these"),
-  kvNodes = toRef(sharedStore, "kvNodes");
-
-/* -------------------------------------------------------------------------- */
-
-const { intersecting, module, promises } = mainStore;
-
-/* -------------------------------------------------------------------------- */
-
+const { $these } = toRefs(mainStore),
+  { intersecting, module, promises } = mainStore,
+  { kvNodes } = toRefs(sharedStore);
 const clear = () => {
     [intersecting, promises].forEach((map) => {
       map.clear();
@@ -35,8 +27,6 @@ const clear = () => {
   templates = computed(
     () => new Map($these.value.map(({ id }) => [id, module(id)])),
   );
-
-/* -------------------------------------------------------------------------- */
 
 watchEffect(() => {
   clear();
