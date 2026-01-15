@@ -7,19 +7,11 @@ Suspense
 
 <script setup lang="ts">
 import { sharedStore } from "@skaldapp/shared";
-import { computed, toRef } from "vue";
+import { computed, toRefs } from "vue";
 
 import { mainStore } from "@/stores/main";
 
-/* -------------------------------------------------------------------------- */
-
-const nodes = toRef(sharedStore, "nodes");
-
-/* -------------------------------------------------------------------------- */
-
-const { module, root } = mainStore;
-
-/* -------------------------------------------------------------------------- */
-
+const { module, root } = mainStore,
+  { nodes } = toRefs(sharedStore);
 const is = computed(() => nodes.value[0] && module(nodes.value[0].id));
 </script>
