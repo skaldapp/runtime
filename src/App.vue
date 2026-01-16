@@ -1,6 +1,5 @@
 <template lang="pug">
-router-view(v-slot="{ Component }")
-  component(:is="Component", :id="nodes[0]?.id")
+router-view
 </template>
 <script setup lang="ts">
 import type { TPage } from "@skaldapp/shared";
