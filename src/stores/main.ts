@@ -37,25 +37,16 @@ import { full } from "markdown-it-emoji";
 import twemoji from "twemoji";
 import { computed, defineAsyncComponent, reactive, toRefs } from "vue";
 
-/* -------------------------------------------------------------------------- */
-
 interface PromiseWithResolvers<T> {
   promise: Promise<T>;
   reject: (reason?: unknown) => void;
   resolve: (value: PromiseLike<T> | T) => void;
 }
 
-/* -------------------------------------------------------------------------- */
-
 let transformNextLinkCloseToken = false;
-
-/* -------------------------------------------------------------------------- */
 
 const { kvNodes, nodes } = toRefs(sharedStore),
   { transform } = transformerDirectives();
-
-/* -------------------------------------------------------------------------- */
-
 const md: MarkdownIt = MarkdownIt({
   highlight: (code: string, language: string) =>
     `<pre><code class="hljs">${
@@ -114,18 +105,7 @@ const md: MarkdownIt = MarkdownIt({
   .use(componentPlugin)
   .use(sfcPlugin);
 
-/* -------------------------------------------------------------------------- */
-
-export const promiseWithResolvers = <T>() => {
-    let resolve!: PromiseWithResolvers<T>["resolve"];
-    let reject!: PromiseWithResolvers<T>["reject"];
-    const promise = new Promise<T>((res, rej) => {
-      resolve = res;
-      reject = rej;
-    });
-    return { promise, reject, resolve };
-  },
-  mainStore = reactive({
+export const mainStore = reactive({
     $these: computed((): TPage[] =>
       mainStore.these.filter(({ frontmatter: { hidden } }) => !hidden),
     ),
@@ -178,7 +158,6 @@ ${styles
         );
       }),
     promises: new Map<string, PromiseWithResolvers<unknown>>(),
-    root: promiseWithResolvers(),
     routeName: undefined as RouteRecordNameGeneric,
     scrollLock: false,
     that: computed((): TPage | undefined =>
@@ -192,9 +171,16 @@ ${styles
         : [mainStore.that],
     ),
     uno: {},
-  });
-
-/* -------------------------------------------------------------------------- */
+  }),
+  promiseWithResolvers = <T>() => {
+    let resolve!: PromiseWithResolvers<T>["resolve"];
+    let reject!: PromiseWithResolvers<T>["reject"];
+    const promise = new Promise<T>((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+    return { promise, reject, resolve };
+  };
 
 md.renderer.rules["emoji"] = (tokens, idx) =>
   tokens[idx] ? twemoji.parse(tokens[idx].content) : "";
