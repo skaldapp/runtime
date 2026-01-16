@@ -1,3 +1,5 @@
+@import url("https://cdn.jsdelivr.net/npm/katex/dist/katex-swap.min.css");
+
 [un-cloak] {
   display: none;
 }
