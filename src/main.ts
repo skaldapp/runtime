@@ -1,4 +1,5 @@
 import type { TPage } from "@skaldapp/shared";
+import type { RouteRecordRaw } from "vue-router";
 
 import presets from "@skaldapp/configs/uno/presets";
 import { fetching, sharedStore } from "@skaldapp/shared";
@@ -11,24 +12,23 @@ import {
   CanonicalPlugin,
   TemplateParamsPlugin,
 } from "unhead/plugins";
-import { createApp, toRef, toRefs } from "vue";
+import { createApp, nextTick, toRef, toRefs } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 import vueApp from "@/App.vue";
 import { mainStore } from "@/stores/main";
 import "@/style.css";
 import notFoundView from "@/views/NotFoundView.vue";
-import pageView from "@/views/PageView.vue";
-import rootView from "@/views/RootView.vue";
+import component from "@/views/PageView.vue";
 
 import "@highlightjs/cdn-assets/styles/default.css";
-import "katex/dist/katex.css";
+import "virtual:uno.css"; // eslint-disable-line import-x/no-unresolved
 
 const app = createApp(vueApp),
   index = (await fetching("index.json")) ?? [],
   routeName = toRef(mainStore, "routeName"),
   { $these, that } = toRefs(mainStore),
-  { intersecting, promises, root } = mainStore,
+  { intersecting, promises } = mainStore,
   { kvNodes, nodes } = toRefs(sharedStore),
   { pathname } = new URL(document.baseURI);
 
@@ -38,6 +38,42 @@ console.info(
 );
 
 sharedStore.tree = index;
+
+await nextTick();
+
+const history = createWebHistory(pathname),
+  routes = [
+    ...nodes.value
+      .filter(({ path }) => path !== undefined)
+      .map(
+        ({
+          branch,
+          children,
+          frontmatter: { template },
+          id: name,
+          to: path = "/",
+        }) => {
+          const route = branch
+            .slice(0, -1)
+            .filter(({ frontmatter: { template } }) => template);
+          route.push(...branch.slice(-1));
+          if (template) route.push(...(children.slice(0, 1) as TPage[]));
+          return (route.reduceRight(
+            (children: object[], { id }, index, array) => [
+              {
+                props: { id },
+                ...(children.length ? { children } : undefined),
+                component,
+                path: index ? "" : path,
+                ...(index === array.length - 1 ? { name } : undefined),
+              },
+            ],
+            [],
+          )[0] ?? { component: notFoundView, path }) as RouteRecordRaw;
+        },
+      ),
+    { component: notFoundView, name: "404", path: "/:pathMatch(.*)*" },
+  ];
 
 await initUnocssRuntime({
   defaults: {
@@ -49,17 +85,8 @@ await initUnocssRuntime({
     mainStore.uno = uno;
     let scrollLock = false;
     const router = createRouter({
-        history: createWebHistory(pathname),
-        routes: [
-          ...(nodes.value as TPage[])
-            .filter(({ path }) => path !== undefined)
-            .map(({ id: name, to: path = "/" }) => ({
-              children: [{ component: pageView, name, path: "" }],
-              component: rootView,
-              path,
-            })),
-          { component: notFoundView, name: "404", path: "/:pathMatch(.*)*" },
-        ],
+        history,
+        routes,
         scrollBehavior: async ({ hash, name }) => {
           if (name) {
             routeName.value = name;
@@ -68,7 +95,6 @@ await initUnocssRuntime({
               const { index, parent: { frontmatter: { flat } = {} } = {} } =
                 that.value ?? {};
               toggleObserver(true);
-              await root.promise;
               await Promise.all(
                 [...promises.values()].map(({ promise }) => promise),
               );
@@ -113,9 +139,17 @@ await initUnocssRuntime({
         },
       });
 
+    console.log(routes);
+
     router.beforeEach(({ path }) =>
       path !== decodeURI(path) ? decodeURI(path) : undefined,
     );
+
+    router.beforeResolve(() => {
+      [intersecting, promises].forEach((map) => {
+        map.clear();
+      });
+    });
 
     app.use(router);
 
