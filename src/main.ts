@@ -43,7 +43,7 @@ await nextTick();
 
 const history = createWebHistory(pathname),
   routes = [
-    ...nodes.value
+    ...(nodes.value
       .filter(({ path }) => path !== undefined)
       .map(
         ({
@@ -58,7 +58,7 @@ const history = createWebHistory(pathname),
             .filter(({ frontmatter: { template } }) => template);
           route.push(...branch.slice(-1));
           if (template) route.push(...(children.slice(0, 1) as TPage[]));
-          return (route.reduceRight(
+          return route.reduceRight(
             (children: object[], { id }, index, array) => [
               {
                 props: { id },
@@ -69,9 +69,10 @@ const history = createWebHistory(pathname),
               },
             ],
             [],
-          )[0] ?? { component: notFoundView, path }) as RouteRecordRaw;
+          )[0];
         },
-      ),
+      )
+      .filter((node) => node !== undefined) as RouteRecordRaw[]),
     { component: notFoundView, name: "404", path: "/:pathMatch(.*)*" },
   ];
 
