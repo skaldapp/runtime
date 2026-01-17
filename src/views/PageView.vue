@@ -13,6 +13,7 @@ div(
 import { sharedStore } from "@skaldapp/shared";
 import { vElementVisibility } from "@vueuse/components";
 import { computed, toRefs } from "vue";
+import { useHead } from "@unhead/vue";
 
 import { mainStore, promiseWithResolvers } from "@/stores/main";
 
@@ -22,9 +23,11 @@ const { intersecting, module, promises } = mainStore,
   { kvNodes } = toRefs(sharedStore);
 
 const current = kvNodes.value[id],
-  $these = current?.parent?.frontmatter["flat"]
-    ? current.siblings
-    : [...(current ? [current] : [])];
+  $these = (
+    current?.parent?.frontmatter["flat"]
+      ? current.siblings
+      : [...(current ? [current] : [])]
+  ).filter(({ frontmatter: { hidden } }) => !hidden);
 
 const templates = computed(
   () => new Map($these.map(({ id }) => [id, module(id)])),
@@ -34,4 +37,6 @@ $these.forEach(({ id }) => {
   intersecting.set(id, false);
   promises.set(id, promiseWithResolvers());
 });
+
+useHead(current?.frontmatter, { mode: "client" });
 </script>
