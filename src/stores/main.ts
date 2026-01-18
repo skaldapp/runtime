@@ -1,7 +1,6 @@
 import type { MarkdownItEnv } from "@mdit-vue/types";
-import type { TPage } from "@skaldapp/shared";
-import type { UnocssPluginContext } from "unocss";
-import type { RouteRecordNameGeneric } from "vue-router";
+import type { RuntimeContext } from "@unocss/runtime";
+import type { UnocssPluginContext, UnoGenerator } from "unocss";
 
 import hljs from "@highlightjs/cdn-assets/es/highlight";
 import { componentPlugin } from "@mdit-vue/plugin-component";
@@ -28,119 +27,126 @@ import { sub } from "@mdit/plugin-sub";
 import { sup } from "@mdit/plugin-sup";
 import { tasklist } from "@mdit/plugin-tasklist";
 import { ElementTransform } from "@nolebase/markdown-it-element-transform";
+import presets from "@skaldapp/configs/uno/presets";
 import loadModule from "@skaldapp/loader-sfc";
-import { fetching, sharedStore } from "@skaldapp/shared";
+import initUnocssRuntime from "@unocss/runtime";
 import transformerDirectives from "@unocss/transformer-directives";
+import { useFetch } from "@vueuse/core";
 import MagicString from "magic-string";
 import MarkdownIt from "markdown-it";
 import { full } from "markdown-it-emoji";
 import twemoji from "twemoji";
-import { computed, defineAsyncComponent, reactive, toRefs } from "vue";
+import { defineAsyncComponent } from "vue";
 
-interface PromiseWithResolvers<T> {
-  promise: Promise<T>;
-  reject: (reason?: unknown) => void;
-  resolve: (value: PromiseLike<T> | T) => void;
-}
+let transformNextLinkCloseToken = false,
+  unoGenerator: null | UnoGenerator = null;
 
-let transformNextLinkCloseToken = false;
-
-const { kvNodes, nodes } = toRefs(sharedStore),
-  { transform } = transformerDirectives();
-const md: MarkdownIt = MarkdownIt({
-  highlight: (code: string, language: string) =>
-    `<pre><code class="hljs">${
-      (language && hljs.getLanguage(language)
-        ? hljs.highlight(code, { language }).value
-        : md.utils.escapeHtml(code)) as string
-    }</code></pre>`,
-  html: true,
-  linkify: true,
-  typographer: true,
-})
-  .use(ElementTransform, {
-    transform(token) {
-      switch (token.type) {
-        case "link_close":
-          if (transformNextLinkCloseToken) {
-            token.tag = "RouterLink";
-            transformNextLinkCloseToken = false;
-          }
-          break;
-        case "link_open": {
-          const href = token.attrGet("href") ?? "/";
-          if (!URL.canParse(href)) {
-            token.tag = "RouterLink";
-            token.attrSet("to", href);
-            token.attrs?.splice(token.attrIndex("href"), 1);
-            transformNextLinkCloseToken = true;
-          }
-          break;
-        }
-      }
-    },
+const display = "inline-block",
+  extraProperties = { display },
+  html = true,
+  iconsOptions = { extraProperties },
+  linkify = true,
+  typographer = true,
+  md: MarkdownIt = MarkdownIt({
+    highlight: (code, language) =>
+      `<pre><code class="hljs">${
+        (language && hljs.getLanguage(language)
+          ? hljs.highlight(code, { language }).value
+          : md.utils.escapeHtml(code)) as string
+      }</code></pre>`,
+    html,
+    linkify,
+    typographer,
   })
-  .use(full)
-  .use(abbr)
-  .use(align)
-  .use(attrs)
-  .use(demo)
-  .use(dl)
-  .use(figure)
-  .use(footnote)
-  .use(icon)
-  .use(imgLazyload)
-  .use(imgMark)
-  .use(imgSize)
-  .use(ins)
-  .use(katex)
-  .use(mark)
-  .use(ruby)
-  .use(spoiler)
-  .use(sub)
-  .use(sup)
-  .use(tasklist)
-  .use(frontmatterPlugin)
-  .use(tocPlugin)
-  .use(componentPlugin)
-  .use(sfcPlugin);
+    .use(ElementTransform, {
+      transform(token) {
+        switch (token.type) {
+          case "link_close":
+            if (transformNextLinkCloseToken) {
+              token.tag = "RouterLink";
+              transformNextLinkCloseToken = false;
+            }
+            break;
+          case "link_open": {
+            const href = token.attrGet("href") ?? "/";
+            if (!URL.canParse(href)) {
+              token.tag = "RouterLink";
+              token.attrSet("to", href);
+              token.attrs?.splice(token.attrIndex("href"), 1);
+              transformNextLinkCloseToken = true;
+            }
+            break;
+          }
+        }
+      },
+    })
+    .use(full)
+    .use(abbr)
+    .use(align)
+    .use(attrs)
+    .use(demo)
+    .use(dl)
+    .use(figure)
+    .use(footnote)
+    .use(icon)
+    .use(imgLazyload)
+    .use(imgMark)
+    .use(imgSize)
+    .use(ins)
+    .use(katex)
+    .use(mark)
+    .use(ruby)
+    .use(spoiler)
+    .use(sub)
+    .use(sup)
+    .use(tasklist)
+    .use(frontmatterPlugin)
+    .use(tocPlugin)
+    .use(componentPlugin)
+    .use(sfcPlugin),
+  ready = ({ uno }: RuntimeContext) => {
+    unoGenerator = uno;
+  },
+  { transform } = transformerDirectives();
 
-export const mainStore = reactive({
-    $these: computed((): TPage[] =>
-      mainStore.these.filter(({ frontmatter: { hidden } }) => !hidden),
-    ),
-    intersecting: new Map<string, boolean | undefined>(),
-    module: (id: string) =>
-      defineAsyncComponent(async () => {
-        const env: MarkdownItEnv = {},
-          { uno } = mainStore;
+void initUnocssRuntime({
+  defaults: { presets: presets({ iconsOptions }) },
+  ready,
+});
 
-        md.render((await fetching(`./pages/${id}.md`)) ?? "", env);
+md.renderer.rules["emoji"] = (tokens, idx) =>
+  tokens[idx] ? twemoji.parse(tokens[idx].content) : "";
 
-        const injector = `
+export default (id: string) =>
+  defineAsyncComponent(async () => {
+    const env: MarkdownItEnv = {},
+      { data } = await useFetch(`./pages/${id}.md`).text();
+
+    md.render(data.value ?? "", env);
+
+    const injector = `
 const $id = "${id}";
 const $frontmatter = ${JSON.stringify(env.frontmatter ?? {})};
 `,
-          styles =
-            env.sfcBlocks?.styles.map(
-              ({ contentStripped, tagClose, tagOpen }) => ({
-                contentStripped: new MagicString(contentStripped),
-                tagClose,
-                tagOpen,
-              }),
-            ) ?? [];
+      styles =
+        env.sfcBlocks?.styles.map(({ contentStripped, tagClose, tagOpen }) => ({
+          contentStripped: new MagicString(contentStripped),
+          tagClose,
+          tagOpen,
+        })) ?? [];
 
-        await Promise.all(
-          styles.map(
-            async ({ contentStripped }) =>
-              await transform(contentStripped, id, {
-                uno,
-              } as UnocssPluginContext),
-          ),
-        );
+    await Promise.all(
+      styles.map(
+        async ({ contentStripped }) =>
+          unoGenerator &&
+          transform(contentStripped, id, {
+            uno: unoGenerator,
+          } as UnocssPluginContext),
+      ),
+    );
 
-        return loadModule(
-          `${env.sfcBlocks?.template?.content ?? ""}
+    return loadModule(
+      `${env.sfcBlocks?.template?.content ?? ""}
 ${env.sfcBlocks?.script?.content ?? ""}
 ${
   env.sfcBlocks?.scriptSetup
@@ -154,33 +160,6 @@ ${styles
   )
   .join("\n")}
 `,
-          { scriptOptions: { inlineTemplate: true } },
-        );
-      }),
-    promises: new Map<string, PromiseWithResolvers<unknown>>(),
-    routeName: undefined as RouteRecordNameGeneric,
-    scrollLock: false,
-    that: computed((): TPage | undefined =>
-      mainStore.routeName === nodes.value[0]?.id
-        ? nodes.value[0]?.$children[0]
-        : kvNodes.value[mainStore.routeName as keyof object],
-    ),
-    these: computed((): TPage[] =>
-      mainStore.that === undefined || mainStore.that.parent?.frontmatter["flat"]
-        ? (mainStore.that?.siblings ?? [])
-        : [mainStore.that],
-    ),
-    uno: {},
-  }),
-  promiseWithResolvers = <T>() => {
-    let resolve!: PromiseWithResolvers<T>["resolve"];
-    let reject!: PromiseWithResolvers<T>["reject"];
-    const promise = new Promise<T>((res, rej) => {
-      resolve = res;
-      reject = rej;
-    });
-    return { promise, reject, resolve };
-  };
-
-md.renderer.rules["emoji"] = (tokens, idx) =>
-  tokens[idx] ? twemoji.parse(tokens[idx].content) : "";
+      { scriptOptions: { inlineTemplate: true } },
+    );
+  });
