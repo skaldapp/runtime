@@ -1,42 +1,18 @@
 <template lang="pug">
-div(
-  v-for="[id, is] in templates",
-  :id,
-  :key="id",
-  v-element-visibility="[(state)=>{intersecting.set(id,state)},{threshold:0.1}]"
-)
-  div(v-bind="kvNodes[id]?.frontmatter['attrs'] ?? {}")
-    component(:is, @vue:mounted="promises.get(id)?.resolve(undefined)")
+div(v-bind="kvNodes[id]?.frontmatter['attrs'] ?? {}")
+  component(:is)
 </template>
 
 <script setup lang="ts">
 import { sharedStore } from "@skaldapp/shared";
-import { vElementVisibility } from "@vueuse/components";
-import { computed, toRefs } from "vue";
 import { useHead } from "@unhead/vue";
+import { computed, toRefs } from "vue";
 
-import { mainStore, promiseWithResolvers } from "@/stores/main";
+import module from "@/stores/main";
 
 const { id } = defineProps<{ id: string }>();
-
-const { intersecting, module, promises } = mainStore,
+const is = computed(() => module(id)),
   { kvNodes } = toRefs(sharedStore);
 
-const current = kvNodes.value[id],
-  $these = (
-    current?.parent?.frontmatter["flat"]
-      ? current.siblings
-      : [...(current ? [current] : [])]
-  ).filter(({ frontmatter: { hidden } }) => !hidden);
-
-const templates = computed(
-  () => new Map($these.map(({ id }) => [id, module(id)])),
-);
-
-$these.forEach(({ id }) => {
-  intersecting.set(id, false);
-  promises.set(id, promiseWithResolvers());
-});
-
-useHead(current?.frontmatter, { mode: "client" });
+useHead(kvNodes.value[id]?.frontmatter, { mode: "client" });
 </script>
