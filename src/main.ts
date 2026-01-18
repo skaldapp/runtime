@@ -36,7 +36,7 @@ whenever(
     const routes = [
       ...(nodes.value
         .filter(({ path }) => path !== undefined)
-        .map(({ branch, to: path = "/" }) => {
+        .map(({ branch, id: name, to: path = "/" }) => {
           const [last, ...rest] = [...branch].reverse();
           return !last || last.frontmatter["hidden"]
             ? undefined
@@ -53,6 +53,7 @@ whenever(
                     ...(children.length ? { children } : undefined),
                     component,
                     path: index ? "" : path,
+                    ...(index ? undefined : { name }),
                   },
                 ],
                 [],
