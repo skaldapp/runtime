@@ -1,7 +1,7 @@
 {
   "$schema": "https://www.schemastore.org/package",
   "name": "@skaldapp/runtime",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Vue.js-based runtime for skald applications with dynamic loading, SEO optimization, and intersection observer tracking.",
   "keywords": [
     "vue",
