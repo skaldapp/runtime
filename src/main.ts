@@ -82,6 +82,6 @@ app
   .provide("pages", toReactive(kvNodes));
 
 console.info(
-  "⛰ Skald / https://github.com/skaldapp / runtime ver.:",
+  "Skald / https://github.com/skaldapp / runtime ver.:",
   __APP_VERSION__,
 );
