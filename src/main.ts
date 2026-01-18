@@ -47,12 +47,12 @@ whenever(
                     template && !hidden,
                 ),
               ].reduce(
-                (children: object[], { id }, index) => [
+                (children: object[], { id }, index, array) => [
                   {
                     props: { id },
                     ...(children.length ? { children } : undefined),
                     component,
-                    path: index ? "" : path,
+                    path: index === array.length - 1 ? path : "",
                     ...(index ? undefined : { name }),
                   },
                 ],
