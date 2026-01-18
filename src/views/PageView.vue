@@ -1,5 +1,5 @@
 <template lang="pug">
-div(v-bind="kvNodes[id]?.frontmatter['attrs'] ?? {}")
+div(v-bind="frontmatter?.['attrs'] ?? {}")
   component(:is)
 </template>
 
@@ -13,6 +13,7 @@ import module from "@/stores/main";
 const { id } = defineProps<{ id: string }>();
 const is = computed(() => module(id)),
   { kvNodes } = toRefs(sharedStore);
+const frontmatter = computed(() => kvNodes.value[id]?.frontmatter);
 
-useHead(kvNodes.value[id]?.frontmatter, { mode: "client" });
+useHead(frontmatter, { mode: "client" });
 </script>
