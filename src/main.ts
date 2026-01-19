@@ -22,7 +22,7 @@ import "@/style.css";
 import "virtual:uno.css"; // eslint-disable-line import-x/no-unresolved
 
 const app = createApp(vueApp),
-  { data, isFinished } = useFetch("index.json").json(),
+  { data, isFinished } = useFetch("./docs/index.json").json(),
   { kvNodes, nodes } = toRefs(sharedStore),
   { pathname } = new URL(document.baseURI);
 const history = createWebHistory(pathname);
@@ -79,7 +79,7 @@ app
       ],
     }),
   )
-  .provide("pages", toReactive(kvNodes));
+  .provide("docs", toReactive(kvNodes));
 
 console.info(
   "Skald / https://github.com/skaldapp / runtime ver.:",
