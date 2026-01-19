@@ -120,7 +120,7 @@ md.renderer.rules["emoji"] = (tokens, idx) =>
 export default (id: string) =>
   defineAsyncComponent(async () => {
     const env: MarkdownItEnv = {},
-      { data } = await useFetch(`./pages/${id}.md`).text();
+      { data } = await useFetch(`./docs/${id}.md`).text();
 
     md.render(data.value ?? "", env);
 
