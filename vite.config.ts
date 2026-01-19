@@ -129,7 +129,7 @@ export default mergeConfig(
               attrs: {
                 as: "fetch",
                 crossorigin: true,
-                href: "./index.json",
+                href: "./docs/index.json",
                 rel: "preload",
               },
               injectTo: "head",
