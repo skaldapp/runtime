@@ -35,6 +35,7 @@ import { useFetch } from "@vueuse/core";
 import MagicString from "magic-string";
 import MarkdownIt from "markdown-it";
 import { full } from "markdown-it-emoji";
+import pluginMdc from "markdown-it-mdc";
 import twemoji from "twemoji";
 import { defineAsyncComponent } from "vue";
 
@@ -100,6 +101,7 @@ const display = "inline-block",
     .use(sub)
     .use(sup)
     .use(tasklist)
+    .use(pluginMdc)
     .use(frontmatterPlugin)
     .use(tocPlugin)
     .use(componentPlugin)
