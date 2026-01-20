@@ -34,58 +34,25 @@ export default mergeConfig(
   defineConfig({
     build: {
       manifest: true,
+      minify: "terser",
       rollupOptions: {
         external,
         output: {
-          // manualChunks: (id) => {
-          //   const [first, second] =
-          //     id.split("node_modules/")[1]?.split("/") ?? [];
-          //   return (
-          //     first?.[0] === "@" && second ? `${first}-${second}` : first
-          //   )?.replace(/^@/, "");
-          // },
-          manualChunks: {
-            ajv: ["ajv", "ajv-keywords"],
-            katex: ["katex"],
-            markdown: [
-              "markdown-it",
-              "@mdit/plugin-abbr",
-              "@mdit/plugin-align",
-              "@mdit/plugin-attrs",
-              "@mdit/plugin-demo",
-              "@mdit/plugin-dl",
-              "@mdit/plugin-figure",
-              "@mdit/plugin-footnote",
-              "@mdit/plugin-icon",
-              "@mdit/plugin-img-lazyload",
-              "@mdit/plugin-img-mark",
-              "@mdit/plugin-img-size",
-              "@mdit/plugin-ins",
-              "@mdit/plugin-katex",
-              "@mdit/plugin-mark",
-              "@mdit/plugin-ruby",
-              "@mdit/plugin-spoiler",
-              "@mdit/plugin-sub",
-              "@mdit/plugin-sup",
-              "@mdit/plugin-tasklist",
-              "@mdit-vue/plugin-component",
-              "@mdit-vue/plugin-frontmatter",
-              "@mdit-vue/plugin-sfc",
-              "@mdit-vue/plugin-toc",
-              "@nolebase/markdown-it-element-transform",
-            ],
-            unocss: [
-              "@unocss/runtime",
-              "@unocss/transformer-directives",
-              "@unocss/preset-tagify",
-              "@unocss/extractor-arbitrary-variants",
-              "@unocss/preset-attributify",
-              "@unocss/preset-web-fonts",
-              "@unocss/rule-utils",
-              "@unocss/core",
-              "@unocss/preset-typography",
-              "@unocss/preset-wind4",
-            ],
+          manualChunks(id) {
+            const chunks = id.split("/"),
+              index = -~chunks.indexOf("node_modules");
+            chunks[0] = "";
+            const [name] = chunks[index].replace(/^@/, "").split("-");
+            return [
+              "ajv",
+              "highlightjs",
+              "markdown",
+              "mdit",
+              "ofetch",
+              "unocss",
+            ].includes(name)
+              ? name
+              : null;
           },
         },
         plugins: [inject({ Buffer: ["buffer", "Buffer"] })],
