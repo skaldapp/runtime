@@ -45,6 +45,7 @@ export default mergeConfig(
             const [name] = chunks[index].replace(/^@/, "").split("-");
             return [
               "ajv",
+              "css",
               "highlightjs",
               "markdown",
               "mdit",
