@@ -1,6 +1,6 @@
 import type { MarkdownItEnv } from "@mdit-vue/types";
+import type { UnocssPluginContext, UnoGenerator } from "@unocss/core";
 import type { RuntimeContext } from "@unocss/runtime";
-import type { UnocssPluginContext, UnoGenerator } from "unocss";
 
 import hljs from "@highlightjs/cdn-assets/es/highlight";
 import { componentPlugin } from "@mdit-vue/plugin-component";

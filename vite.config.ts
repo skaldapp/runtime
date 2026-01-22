@@ -2,8 +2,8 @@ import type { HtmlTagDescriptor } from "vite";
 
 import inject from "@rollup/plugin-inject";
 import config from "@skaldapp/configs/vite";
+import UnoCSS from "@unocss/vite";
 import { readFileSync, writeFileSync } from "node:fs";
-import UnoCSS from "unocss/vite";
 import { defineConfig, mergeConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
