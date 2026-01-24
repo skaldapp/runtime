@@ -101,7 +101,7 @@ const display = "inline-block",
     .use(sup)
     .use(tasklist)
     .use(frontmatterPlugin)
-    .use(tocPlugin)
+    .use(tocPlugin, { linkTag: "router-link" })
     .use(componentPlugin)
     .use(sfcPlugin),
   ready = ({ uno }: RuntimeContext) => {
