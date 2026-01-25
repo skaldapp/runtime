@@ -34,6 +34,7 @@ import transformerDirectives from "@unocss/transformer-directives";
 import { useFetch } from "@vueuse/core";
 import MagicString from "magic-string";
 import MarkdownIt from "markdown-it";
+import anchor from "markdown-it-anchor";
 import { full } from "markdown-it-emoji";
 import twemoji from "twemoji";
 import { defineAsyncComponent } from "vue";
@@ -80,6 +81,7 @@ const display = "inline-block",
         }
       },
     })
+    .use(anchor)
     .use(full)
     .use(abbr)
     .use(align)

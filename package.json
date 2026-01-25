@@ -69,6 +69,7 @@
     "@vueuse/core": "^14.1.0",
     "magic-string": "^0.30.21",
     "markdown-it": "^14.1.0",
+    "markdown-it-anchor": "^9.2.0",
     "markdown-it-emoji": "^3.0.0",
     "twemoji": "^14.0.2",
     "unhead": "^2.1.2",
