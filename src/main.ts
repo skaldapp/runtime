@@ -1,4 +1,4 @@
-import type { RouteRecordRaw } from "vue-router";
+import type { RouteRecordRaw, RouterScrollBehavior } from "vue-router";
 
 import { sharedStore } from "@skaldapp/shared";
 import { InferSeoMetaPlugin } from "@unhead/addons";
@@ -22,10 +22,14 @@ import "@/style.css";
 import "virtual:uno.css"; // eslint-disable-line import-x/no-unresolved
 
 const app = createApp(vueApp),
+  behavior = "smooth",
+  top = 0,
   { data, isFinished } = useFetch("./docs/index.json").json(),
   { kvNodes, nodes } = toRefs(sharedStore),
   { pathname } = new URL(document.baseURI);
-const history = createWebHistory(pathname);
+const history = createWebHistory(pathname),
+  scrollBehavior: RouterScrollBehavior = ({ hash: el }, _from, savedPosition) =>
+    savedPosition ?? { behavior, ...(el ? { el } : { top }) };
 
 whenever(
   isFinished,
@@ -63,7 +67,7 @@ whenever(
       { component: notFoundView, name: "404", path: "/:pathMatch(.*)*" },
     ];
 
-    app.use(createRouter({ history, routes })).mount("#app");
+    app.use(createRouter({ history, routes, scrollBehavior })).mount("#app");
   },
   { once: true },
 );
