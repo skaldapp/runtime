@@ -40,28 +40,26 @@ whenever(
     const routes = [
       ...(nodes.value
         .filter(({ path }) => path !== undefined)
-        .map(({ branch, id: name, to: path = "/" }) => {
-          const [last, ...rest] = [...branch].reverse();
-          return !last || last.frontmatter["hidden"]
-            ? undefined
-            : [
-                last,
-                ...rest.filter(
-                  ({ frontmatter: { hidden, template } }) =>
-                    template && !hidden,
-                ),
-              ].reduce(
-                (children: object[], { id }, index, array) => [
-                  {
-                    props: { id },
-                    ...(children.length ? { children } : undefined),
-                    component,
-                    path: index === array.length - 1 ? path : "",
-                    ...(index ? undefined : { name }),
-                  },
-                ],
-                [],
-              )[0];
+        .map(({ $branch, id: name, to: path = "/" }) => {
+          const [last, ...rest] = [...$branch].reverse();
+          return (
+            last &&
+            [
+              last,
+              ...rest.filter(({ frontmatter: { template } }) => template),
+            ].reduce(
+              (children: object[], { id }, index, array) => [
+                {
+                  props: { id },
+                  ...(children.length ? { children } : undefined),
+                  component,
+                  path: index === array.length - 1 ? path : "",
+                  ...(index ? undefined : { name }),
+                },
+              ],
+              [],
+            )[0]
+          );
         })
         .filter((node) => node !== undefined) as RouteRecordRaw[]),
       { component: notFoundView, name: "404", path: "/:pathMatch(.*)*" },
