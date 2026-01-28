@@ -17,7 +17,6 @@ import notFoundView from "@/views/NotFoundView.vue";
 import component from "@/views/PageView.vue";
 
 import "@highlightjs/cdn-assets/styles/default.css";
-import "@mdit/plugin-alert/style";
 
 import "@/style.css";
 import "virtual:uno.css"; // eslint-disable-line import-x/no-unresolved

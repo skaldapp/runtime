@@ -8,7 +8,6 @@ import { frontmatterPlugin } from "@mdit-vue/plugin-frontmatter";
 import { sfcPlugin } from "@mdit-vue/plugin-sfc";
 import { tocPlugin } from "@mdit-vue/plugin-toc";
 import { abbr } from "@mdit/plugin-abbr";
-import { alert } from "@mdit/plugin-alert";
 import { align } from "@mdit/plugin-align";
 import { attrs } from "@mdit/plugin-attrs";
 import { demo } from "@mdit/plugin-demo";
@@ -85,7 +84,6 @@ const display = "inline-block",
     .use(anchor)
     .use(full)
     .use(abbr)
-    .use(alert)
     .use(align)
     .use(attrs)
     .use(demo)
