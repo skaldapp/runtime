@@ -7,7 +7,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { defineConfig, mergeConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
-const external = ["vue", "vue-router", "@skaldapp/loader-sfc"],
+const external = ["vue", "vue-router"],
   targets = external.map((key, i) => ({
     dest: "assets",
     file: "",
@@ -47,10 +47,13 @@ export default mergeConfig(
               "ajv",
               "css",
               "highlightjs",
+              "katex",
               "markdown",
               "mdit",
               "ofetch",
+              "sucrase",
               "unocss",
+              "vue",
             ].includes(name)
               ? name
               : null;
