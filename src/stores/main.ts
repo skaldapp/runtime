@@ -38,6 +38,7 @@ import anchor from "markdown-it-anchor";
 import { full } from "markdown-it-emoji";
 import twemoji from "twemoji";
 import { defineAsyncComponent } from "vue";
+import { ssrRenderAttrs } from "vue/server-renderer";
 
 let transformNextLinkCloseToken = false,
   unoGenerator: null | UnoGenerator = null;
@@ -126,12 +127,13 @@ export default (id: string) =>
 
     md.render(data.value ?? "", env);
 
-    const injector = `
+    const { frontmatter = {}, sfcBlocks } = env,
+      injector = `
 const $id = "${id}";
-const $frontmatter = ${JSON.stringify(env.frontmatter ?? {})};
+const $frontmatter = ${JSON.stringify(frontmatter)};
 `,
       styles =
-        env.sfcBlocks?.styles.map(({ contentStripped, tagClose, tagOpen }) => ({
+        sfcBlocks?.styles.map(({ contentStripped, tagClose, tagOpen }) => ({
           contentStripped: new MagicString(contentStripped),
           tagClose,
           tagOpen,
@@ -148,11 +150,17 @@ const $frontmatter = ${JSON.stringify(env.frontmatter ?? {})};
     );
 
     return loadModule(
-      `${env.sfcBlocks?.template?.content ?? ""}
-${env.sfcBlocks?.script?.content ?? ""}
+      `${
+        sfcBlocks?.template
+          ? frontmatter["attrs"]
+            ? `${sfcBlocks.template.tagOpen}<div${ssrRenderAttrs(frontmatter["attrs"] as Record<string, unknown>)}>${sfcBlocks.template.contentStripped}</div>${sfcBlocks.template.tagClose}`
+            : sfcBlocks.template.content
+          : ""
+      }
+${sfcBlocks?.script?.content ?? ""}
 ${
-  env.sfcBlocks?.scriptSetup
-    ? `${env.sfcBlocks.scriptSetup.tagOpen}${injector}${env.sfcBlocks.scriptSetup.contentStripped}${env.sfcBlocks.scriptSetup.tagClose}`
+  sfcBlocks?.scriptSetup
+    ? `${sfcBlocks.scriptSetup.tagOpen}${injector}${sfcBlocks.scriptSetup.contentStripped}${sfcBlocks.scriptSetup.tagClose}`
     : `<script setup>${injector}</script>`
 }
 ${styles

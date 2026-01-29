@@ -1,6 +1,5 @@
 <template lang="pug">
-div(v-bind="frontmatter?.['attrs'] ?? {}")
-  component(:is)
+component(:is)
 </template>
 
 <script setup lang="ts">
