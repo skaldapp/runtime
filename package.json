@@ -1,7 +1,7 @@
 {
   "$schema": "https://www.schemastore.org/package",
   "name": "@skaldapp/runtime",
-  "version": "3.0.20",
+  "version": "3.0.21",
   "description": " Skald Runtime is a Vue.js-based runtime environment for Skald applications that enables dynamic component loading from markdown files, provides SEO optimization, and includes features like syntax highlighting, mathematical expressions, and emoji support. Built with Vue 3's Composition API, it processes markdown content with a comprehensive pipeline and integrates with UnoCSS for styling.",
   "keywords": [
     "vue",
