@@ -8,7 +8,7 @@ import { defineConfig, mergeConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
 const external = ["vue", "vue-router"],
-  targets = external.map((key, i) => ({
+  targets = ["es-module-shims", ...external].map((key, i) => ({
     dest: "assets",
     file: "",
     name: key,
@@ -24,9 +24,7 @@ const external = ["vue", "vue-router"],
         return file;
       }
     },
-    src: `node_modules/${key}/dist/${
-      key.split("/").pop() ?? key
-    }.esm-browser.prod.js`,
+    src: `node_modules/${key}/dist/${key}${i ? ".esm-browser.prod" : ""}.js`,
   }));
 
 export default mergeConfig(
@@ -84,18 +82,21 @@ export default mergeConfig(
         name: "manifest",
       },
       {
-        name: "importmap",
+        name: "html-transform",
         transformIndexHtml() {
-          const imports = Object.fromEntries(
-            targets.map((target) => [
-              target.name,
-              `./assets/${target.rename(
-                `${target.name.split("/").pop() ?? target.name}.esm-browser.prod`,
-                "js",
-              )}`,
-            ]),
-          );
+          const [, ...vue] = targets,
+            imports = Object.fromEntries(
+              vue.map((target) => [
+                target.name,
+                `./assets/${target.rename(`${target.name}.esm-browser.prod`, "js")}`,
+              ]),
+            );
           return [
+            {
+              children: `navigator.userAgent.toLowerCase().includes("firefox")&&document.head.appendChild(Object.assign(document.createElement("script"),{src:"./assets/${targets[0].rename(targets[0].name, "js")}"}))`,
+              injectTo: "head-prepend",
+              tag: "script",
+            },
             {
               attrs: {
                 as: "fetch",
