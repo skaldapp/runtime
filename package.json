@@ -59,8 +59,8 @@
     "@mdit/plugin-sup": "^0.23.1",
     "@mdit/plugin-tasklist": "^0.22.3",
     "@nolebase/markdown-it-element-transform": "^2.18.2",
-    "@skaldapp/loader-sfc": "^2.4.18",
-    "@skaldapp/shared": "^1.2.35",
+    "@skaldapp/loader-sfc": "^2.4.19",
+    "@skaldapp/shared": "^1.2.36",
     "@unhead/addons": "^2.1.2",
     "@unhead/vue": "^2.1.2",
     "@unocss/runtime": "^66.6.0",
@@ -74,12 +74,12 @@
     "twemoji": "^14.0.2",
     "unhead": "^2.1.2",
     "vue": "^3.5.27",
-    "vue-router": "^5.0.1"
+    "vue-router": "^5.0.2"
   },
   "devDependencies": {
     "@mdit-vue/types": "^3.0.2",
     "@rollup/plugin-inject": "^5.0.5",
-    "@skaldapp/configs": "^1.2.51",
+    "@skaldapp/configs": "^1.2.52",
     "@types/markdown-it-emoji": "^3.0.1",
     "@types/node": "^25.2.0",
     "@unocss/core": "^66.6.0",
