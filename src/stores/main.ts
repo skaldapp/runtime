@@ -8,13 +8,9 @@ import { frontmatterPlugin } from "@mdit-vue/plugin-frontmatter";
 import { sfcPlugin } from "@mdit-vue/plugin-sfc";
 import { tocPlugin } from "@mdit-vue/plugin-toc";
 import { abbr } from "@mdit/plugin-abbr";
-import { align } from "@mdit/plugin-align";
-import { attrs } from "@mdit/plugin-attrs";
-import { demo } from "@mdit/plugin-demo";
 import { dl } from "@mdit/plugin-dl";
 import { figure } from "@mdit/plugin-figure";
 import { footnote } from "@mdit/plugin-footnote";
-import { icon } from "@mdit/plugin-icon";
 import { imgLazyload } from "@mdit/plugin-img-lazyload";
 import { imgMark } from "@mdit/plugin-img-mark";
 import { imgSize } from "@mdit/plugin-img-size";
@@ -36,6 +32,7 @@ import MagicString from "magic-string";
 import MarkdownIt from "markdown-it";
 import anchor from "markdown-it-anchor";
 import { full } from "markdown-it-emoji";
+import pluginMdc from "markdown-it-mdc";
 import twemoji from "twemoji";
 import { defineAsyncComponent } from "vue";
 import { ssrRenderAttrs } from "vue/server-renderer";
@@ -85,13 +82,9 @@ const display = "inline-block",
     .use(anchor)
     .use(full)
     .use(abbr)
-    .use(align)
-    .use(attrs)
-    .use(demo)
     .use(dl)
     .use(figure)
     .use(footnote)
-    .use(icon)
     .use(imgLazyload)
     .use(imgMark)
     .use(imgSize)
@@ -103,6 +96,7 @@ const display = "inline-block",
     .use(sub)
     .use(sup)
     .use(tasklist)
+    .use(pluginMdc)
     .use(frontmatterPlugin)
     .use(tocPlugin, { linkTag: "router-link" })
     .use(componentPlugin)
