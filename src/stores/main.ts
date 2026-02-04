@@ -41,6 +41,7 @@ const display = "inline-block",
   iconsOptions = { extraProperties },
   linkify = true,
   typographer = true,
+  xhtmlOut = true,
   md: MarkdownIt = MarkdownIt({
     highlight: (code, language) =>
       `<pre><code class="hljs">${
@@ -51,6 +52,7 @@ const display = "inline-block",
     html,
     linkify,
     typographer,
+    xhtmlOut,
   })
     .use(ElementTransform, {
       transform(token) {
