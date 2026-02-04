@@ -17,7 +17,6 @@ import { imgSize } from "@mdit/plugin-img-size";
 import { ins } from "@mdit/plugin-ins";
 import { katex } from "@mdit/plugin-katex";
 import { mark } from "@mdit/plugin-mark";
-import { ruby } from "@mdit/plugin-ruby";
 import { spoiler } from "@mdit/plugin-spoiler";
 import { sub } from "@mdit/plugin-sub";
 import { sup } from "@mdit/plugin-sup";
@@ -91,7 +90,6 @@ const display = "inline-block",
     .use(ins)
     .use(katex)
     .use(mark)
-    .use(ruby)
     .use(spoiler)
     .use(sub)
     .use(sup)
