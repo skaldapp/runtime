@@ -52,6 +52,7 @@ export default mergeConfig(
               "sucrase",
               "unocss",
               "vue",
+              "yaml",
             ].includes(name)
               ? name
               : null;

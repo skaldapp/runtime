@@ -7,19 +7,8 @@ import { componentPlugin } from "@mdit-vue/plugin-component";
 import { frontmatterPlugin } from "@mdit-vue/plugin-frontmatter";
 import { sfcPlugin } from "@mdit-vue/plugin-sfc";
 import { tocPlugin } from "@mdit-vue/plugin-toc";
-import { abbr } from "@mdit/plugin-abbr";
-import { dl } from "@mdit/plugin-dl";
-import { figure } from "@mdit/plugin-figure";
-import { footnote } from "@mdit/plugin-footnote";
-import { imgLazyload } from "@mdit/plugin-img-lazyload";
-import { imgMark } from "@mdit/plugin-img-mark";
-import { imgSize } from "@mdit/plugin-img-size";
-import { ins } from "@mdit/plugin-ins";
 import { katex } from "@mdit/plugin-katex";
-import { mark } from "@mdit/plugin-mark";
 import { spoiler } from "@mdit/plugin-spoiler";
-import { sub } from "@mdit/plugin-sub";
-import { sup } from "@mdit/plugin-sup";
 import { tasklist } from "@mdit/plugin-tasklist";
 import { ElementTransform } from "@nolebase/markdown-it-element-transform";
 import presets from "@skaldapp/configs/uno/presets";
@@ -29,9 +18,16 @@ import transformerDirectives from "@unocss/transformer-directives";
 import { useFetch } from "@vueuse/core";
 import MagicString from "magic-string";
 import MarkdownIt from "markdown-it";
+import abbr from "markdown-it-abbr";
 import anchor from "markdown-it-anchor";
+import deflist from "markdown-it-deflist";
 import { full } from "markdown-it-emoji";
+import footnote from "markdown-it-footnote";
+import ins from "markdown-it-ins";
+import mark from "markdown-it-mark";
 import pluginMdc from "markdown-it-mdc";
+import sub from "markdown-it-sub";
+import sup from "markdown-it-sup";
 import twemoji from "twemoji";
 import { defineAsyncComponent } from "vue";
 import { ssrRenderAttrs } from "vue/server-renderer";
@@ -81,12 +77,8 @@ const display = "inline-block",
     .use(anchor)
     .use(full)
     .use(abbr)
-    .use(dl)
-    .use(figure)
+    .use(deflist)
     .use(footnote)
-    .use(imgLazyload)
-    .use(imgMark)
-    .use(imgSize)
     .use(ins)
     .use(katex)
     .use(mark)
