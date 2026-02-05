@@ -1,12 +1,13 @@
 import type { RouteRecordRaw, RouterScrollBehavior } from "vue-router";
 
 import { sharedStore } from "@skaldapp/shared";
-import { InferSeoMetaPlugin } from "@unhead/addons";
 import { createHead } from "@unhead/vue/client";
 import { toReactive, useFetch, whenever } from "@vueuse/core";
 import {
   AliasSortingPlugin,
   CanonicalPlugin,
+  FlatMetaPlugin,
+  InferSeoMetaPlugin,
   TemplateParamsPlugin,
 } from "unhead/plugins";
 import { createApp, nextTick, toRefs } from "vue";
@@ -76,6 +77,7 @@ app
       plugins: [
         TemplateParamsPlugin,
         AliasSortingPlugin,
+        FlatMetaPlugin,
         CanonicalPlugin({}),
         InferSeoMetaPlugin(),
       ],
