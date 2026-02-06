@@ -7,7 +7,6 @@ import { componentPlugin } from "@mdit-vue/plugin-component";
 import { frontmatterPlugin } from "@mdit-vue/plugin-frontmatter";
 import { sfcPlugin } from "@mdit-vue/plugin-sfc";
 import { tocPlugin } from "@mdit-vue/plugin-toc";
-import { katex } from "@mdit/plugin-katex";
 import { spoiler } from "@mdit/plugin-spoiler";
 import { tasklist } from "@mdit/plugin-tasklist";
 import { ElementTransform } from "@nolebase/markdown-it-element-transform";
@@ -15,6 +14,7 @@ import presets from "@skaldapp/configs/uno/presets";
 import loadModule from "@skaldapp/loader-sfc";
 import initUnocssRuntime from "@unocss/runtime";
 import transformerDirectives from "@unocss/transformer-directives";
+import mk from "@vscode/markdown-it-katex";
 import { useFetch } from "@vueuse/core";
 import MagicString from "magic-string";
 import MarkdownIt from "markdown-it";
@@ -82,7 +82,7 @@ const display = "inline-block",
     .use(deflist)
     .use(footnote)
     .use(ins)
-    .use(katex)
+    .use(mk)
     .use(mark)
     .use(spoiler)
     .use(sub)

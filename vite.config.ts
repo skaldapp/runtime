@@ -1,10 +1,10 @@
 import type { HtmlTagDescriptor } from "vite";
 
-import inject from "@rollup/plugin-inject";
 import config from "@skaldapp/configs/vite";
 import UnoCSS from "@unocss/vite";
 import { readFileSync, writeFileSync } from "node:fs";
 import { defineConfig, mergeConfig } from "vite";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
 const external = ["vue", "vue-router"],
@@ -42,26 +42,21 @@ export default mergeConfig(
             chunks[0] = "";
             const [name] = chunks[index].replace(/^@/, "").split("-");
             return [
-              "ajv",
-              "css",
-              "highlightjs",
-              "katex",
               "markdown",
-              "mdit",
               "ofetch",
               "sucrase",
               "unocss",
+              "vscode",
               "vue",
-              "yaml",
             ].includes(name)
               ? name
               : null;
           },
         },
-        plugins: [inject({ Buffer: ["buffer", "Buffer"] })],
       },
     },
     plugins: [
+      nodePolyfills(),
       UnoCSS(),
       viteStaticCopy({ targets }),
       {
