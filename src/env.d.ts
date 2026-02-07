@@ -1,5 +1,4 @@
 declare const __APP_VERSION__: string;
-declare module "@highlightjs/cdn-assets/es/highlight";
 declare module "markdown-it-abbr";
 declare module "markdown-it-sub";
 declare module "markdown-it-sup";

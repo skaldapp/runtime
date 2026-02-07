@@ -2,7 +2,6 @@ import type { MarkdownItEnv } from "@mdit-vue/types";
 import type { UnocssPluginContext, UnoGenerator } from "@unocss/core";
 import type { RuntimeContext } from "@unocss/runtime";
 
-import hljs from "@highlightjs/cdn-assets/es/highlight";
 import { componentPlugin } from "@mdit-vue/plugin-component";
 import { frontmatterPlugin } from "@mdit-vue/plugin-frontmatter";
 import { sfcPlugin } from "@mdit-vue/plugin-sfc";
@@ -43,12 +42,8 @@ const display = "inline-block",
   typographer = true,
   xhtmlOut = true,
   md: MarkdownIt = MarkdownIt({
-    highlight: (code, language) =>
-      `<pre><code class="hljs">${
-        (language && hljs.getLanguage(language)
-          ? hljs.highlight(code, { language }).value
-          : md.utils.escapeHtml(code)) as string
-      }</code></pre>`,
+    highlight: (code, lang) =>
+      `<pre><code${lang && ` class="language-${lang.toLowerCase()}"`}>${md.utils.escapeHtml(code)}</code></pre>`,
     html,
     linkify,
     typographer,

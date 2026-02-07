@@ -1,5 +1,5 @@
 <template lang="pug">
-component(:is)
+component(:is, @vue:mounted="Prism.highlightAll")
 </template>
 
 <script setup lang="ts">
@@ -7,6 +7,8 @@ import type { SerializableHead } from "unhead/types";
 
 import { sharedStore } from "@skaldapp/shared";
 import { useHead } from "@unhead/vue";
+// eslint-disable-next-line import-x/no-unresolved
+import Prism from "virtual:prismjs";
 import { computed, toRefs } from "vue";
 
 import module from "@/stores/main";

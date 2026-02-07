@@ -34,7 +34,6 @@
   },
   "prettier": "@skaldapp/configs/prettierrc",
   "dependencies": {
-    "@highlightjs/cdn-assets": "^11.11.1",
     "@mdit-vue/plugin-component": "^3.0.2",
     "@mdit-vue/plugin-frontmatter": "^3.0.2",
     "@mdit-vue/plugin-sfc": "^3.0.2",
@@ -81,6 +80,7 @@
     "eslint": "^9.39.2",
     "terser": "^5.46.0",
     "vite": "^7.3.1",
+    "vite-plugin-prismjs-plus": "^1.0.4",
     "vite-plugin-static-copy": "^3.2.0"
   }
 }
