@@ -8,8 +8,7 @@ import { defineConfig, mergeConfig } from "vite";
 import prismjsPlugin from "vite-plugin-prismjs-plus";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
-const css = true,
-  external = ["vue", "vue-router"],
+const external = ["vue", "vue-router"],
   languages = ["markup", "css", "clike", "javascript"],
   manual = true,
   plugins = ["autoloader"],
@@ -125,7 +124,7 @@ export default mergeConfig(
           ];
         },
       },
-      prismjsPlugin({ css, languages, manual, plugins }),
+      prismjsPlugin({ languages, manual, plugins }),
     ],
   }),
 );

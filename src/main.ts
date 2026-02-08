@@ -18,6 +18,7 @@ import vueApp from "@/App.vue";
 import notFoundView from "@/views/NotFoundView.vue";
 import "@/style.css";
 import "virtual:uno.css"; // eslint-disable-line import-x/no-unresolved
+import "automad-prism-themes/dist/prism-github.light-dark.css";
 
 import component from "@/views/PageView.vue";
 

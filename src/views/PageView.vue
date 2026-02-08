@@ -1,5 +1,8 @@
 <template lang="pug">
-component(:is, @vue:mounted="Prism.highlightAll")
+component(
+  :is,
+  @vue:mounted="Prism.highlightAllUnder($el.nodeType === 1 ? $el : $el.parentElement)"
+)
 </template>
 
 <script setup lang="ts">
@@ -19,16 +22,11 @@ const is = computed(() => module(id)),
 const input = computed(() => {
   if (kvNodes.value[id]) {
     const {
-        branch,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         frontmatter: { attrs, hidden, icon, template, ...head },
       } = kvNodes.value[id],
-      href =
-        Array(branch.length - 1)
-          .fill("..")
-          .join("/") || "./",
       {
-        base = { href },
+        base, // eslint-disable-line @typescript-eslint/no-unused-vars
         bodyAttrs,
         htmlAttrs,
         link,
@@ -41,9 +39,9 @@ const input = computed(() => {
         titleTemplate,
         ..._flatMeta
       } = head as SerializableHead;
+
     return {
       _flatMeta,
-      base,
       ...(bodyAttrs && { bodyAttrs }),
       ...(htmlAttrs && { htmlAttrs }),
       link,
