@@ -15,6 +15,7 @@ import initUnocssRuntime from "@unocss/runtime";
 import transformerDirectives from "@unocss/transformer-directives";
 import mk from "@vscode/markdown-it-katex";
 import { useFetch } from "@vueuse/core";
+import { toHtml } from "hast-util-to-html";
 import MagicString from "magic-string";
 import MarkdownIt from "markdown-it";
 import abbr from "markdown-it-abbr";
@@ -27,6 +28,7 @@ import mark from "markdown-it-mark";
 import pluginMdc from "markdown-it-mdc";
 import sub from "markdown-it-sub";
 import sup from "markdown-it-sup";
+import { refractor } from "refractor";
 import twemoji from "twemoji";
 import { defineAsyncComponent } from "vue";
 import { ssrRenderAttrs } from "vue/server-renderer";
@@ -42,8 +44,14 @@ const display = "inline-block",
   typographer = true,
   xhtmlOut = true,
   md: MarkdownIt = MarkdownIt({
-    highlight: (code, lang) =>
-      `<pre><code${lang && ` class="language-${lang.toLowerCase()}"`}>${md.utils.escapeHtml(code)}</code></pre>`,
+    highlight: (code, lang) => {
+      const language = lang.toLowerCase();
+      return `<pre><code${language && ` class="language-${language}"`}>${
+        refractor.registered(language)
+          ? toHtml(refractor.highlight(code, language))
+          : md.utils.escapeHtml(code)
+      }</code></pre>`;
+    },
     html,
     linkify,
     typographer,

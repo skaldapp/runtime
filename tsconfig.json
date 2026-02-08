@@ -1,8 +1,5 @@
 {
   "$schema": "https://www.schemastore.org/tsconfig",
   "extends": ["@skaldapp/configs/tsconfig"],
-  "include": ["src/**/*.ts", "src/**/*.vue"],
-  "compilerOptions": {
-    "types": ["vite/client", "vite-plugin-prismjs-plus/client"]
-  }
+  "include": ["src/**/*.ts", "src/**/*.vue"]
 }

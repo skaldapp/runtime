@@ -5,13 +5,9 @@ import config from "@skaldapp/configs/vite";
 import UnoCSS from "@unocss/vite";
 import { readFileSync, writeFileSync } from "node:fs";
 import { defineConfig, mergeConfig } from "vite";
-import prismjsPlugin from "vite-plugin-prismjs-plus";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
 const external = ["vue", "vue-router"],
-  languages = ["markup", "css", "clike", "javascript"],
-  manual = true,
-  plugins = ["autoloader"],
   targets = ["es-module-shims", ...external].map((key, i) => ({
     dest: "assets",
     file: "",
@@ -124,7 +120,6 @@ export default mergeConfig(
           ];
         },
       },
-      prismjsPlugin({ languages, manual, plugins }),
     ],
   }),
 );

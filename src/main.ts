@@ -10,7 +10,6 @@ import {
   InferSeoMetaPlugin,
   TemplateParamsPlugin,
 } from "unhead/plugins";
-import Prism from "virtual:prismjs"; // eslint-disable-line import-x/no-unresolved
 import { createApp, nextTick, toRefs } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 
@@ -31,9 +30,6 @@ const app = createApp(vueApp),
 const history = createWebHistory(pathname),
   scrollBehavior: RouterScrollBehavior = ({ hash: el }, _from, savedPosition) =>
     savedPosition ?? { behavior, ...(el ? { el } : { top }) };
-
-Prism.plugins.autoloader.languages_path =
-  "https://cdn.jsdelivr.net/npm/prismjs/components/";
 
 whenever(
   isFinished,
