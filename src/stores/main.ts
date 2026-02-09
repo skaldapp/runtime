@@ -40,13 +40,16 @@ const display = "inline-block",
   extraProperties = { display },
   html = true,
   iconsOptions = { extraProperties },
+  inlineTemplate = true,
   linkify = true,
   typographer = true,
   xhtmlOut = true,
+  // eslint-disable-next-line sonarjs/disabled-auto-escaping
   md: MarkdownIt = MarkdownIt({
     highlight: (code, lang) => {
-      const language = lang.toLowerCase();
-      return `<pre><code${language && ` class="language-${language}"`}>${
+      const language = lang.toLowerCase(),
+        classAttr = language && ` class="language-${language}"`;
+      return `<pre><code${classAttr}>${
         refractor.registered(language)
           ? toHtml(refractor.highlight(code, language))
           : md.utils.escapeHtml(code)
@@ -99,6 +102,7 @@ const display = "inline-block",
   ready = ({ uno }: RuntimeContext) => {
     unoGenerator = uno;
   },
+  scriptOptions = { inlineTemplate },
   { transform } = transformerDirectives();
 
 void initUnocssRuntime({
@@ -140,11 +144,9 @@ const $frontmatter = ${JSON.stringify(frontmatter)};
 
     return loadModule(
       `${
-        sfcBlocks?.template
-          ? frontmatter["attrs"]
-            ? `${sfcBlocks.template.tagOpen}<div${ssrRenderAttrs(frontmatter["attrs"] as Record<string, unknown>)}>${sfcBlocks.template.contentStripped}</div>${sfcBlocks.template.tagClose}`
-            : sfcBlocks.template.content
-          : ""
+        sfcBlocks?.template && frontmatter["attrs"]
+          ? `${sfcBlocks.template.tagOpen}<div${ssrRenderAttrs(frontmatter["attrs"] as Record<string, unknown>)}>${sfcBlocks.template.contentStripped}</div>${sfcBlocks.template.tagClose}`
+          : (sfcBlocks?.template?.content ?? "")
       }
 ${sfcBlocks?.script?.content ?? ""}
 ${
@@ -159,6 +161,6 @@ ${styles
   )
   .join("\n")}
 `,
-      { scriptOptions: { inlineTemplate: true } },
+      { scriptOptions },
     );
   });
