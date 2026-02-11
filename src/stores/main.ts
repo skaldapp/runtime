@@ -1,5 +1,5 @@
 import type { MarkdownItEnv } from "@mdit-vue/types";
-import type { UnocssPluginContext, UnoGenerator } from "@unocss/core";
+import type { UnocssPluginContext } from "@unocss/core";
 import type { RuntimeContext } from "@unocss/runtime";
 
 import { componentPlugin } from "@mdit-vue/plugin-component";
@@ -31,10 +31,11 @@ import sup from "markdown-it-sup";
 import { refractor } from "refractor";
 import twemoji from "twemoji";
 import { defineAsyncComponent } from "vue";
-import { ssrRenderAttrs } from "vue/server-renderer";
 
-let transformNextLinkCloseToken = false,
-  unoGenerator: null | UnoGenerator = null;
+let extractAll: null | RuntimeContext["extractAll"] = null,
+  toggleObserver: null | RuntimeContext["toggleObserver"] = null,
+  transformNextLinkCloseToken = false,
+  uno: null | RuntimeContext["uno"] = null;
 
 const display = "inline-block",
   extraProperties = { display },
@@ -99,8 +100,8 @@ const display = "inline-block",
     .use(tocPlugin, { linkTag: "router-link" })
     .use(componentPlugin)
     .use(sfcPlugin),
-  ready = ({ uno }: RuntimeContext) => {
-    unoGenerator = uno;
+  ready = (runtime: RuntimeContext) => {
+    ({ extractAll, toggleObserver, uno } = runtime);
   },
   scriptOptions = { inlineTemplate },
   { transform } = transformerDirectives();
@@ -113,41 +114,37 @@ void initUnocssRuntime({
 md.renderer.rules["emoji"] = (tokens, idx) =>
   tokens[idx] ? twemoji.parse(tokens[idx].content) : "";
 
-export default (id: string) =>
-  defineAsyncComponent(async () => {
-    const env: MarkdownItEnv = {},
-      { data } = await useFetch(`./docs/${id}.md`).text();
+export const getExtractAll = () => extractAll,
+  getToggleObserver = () => toggleObserver,
+  module = (id: string) =>
+    defineAsyncComponent(async () => {
+      const env: MarkdownItEnv = {},
+        { data } = await useFetch(`./docs/${id}.md`).text();
 
-    md.render(data.value ?? "", env);
+      md.render(data.value ?? "", env);
 
-    const { frontmatter = {}, sfcBlocks } = env,
-      injector = `
+      const { frontmatter = {}, sfcBlocks } = env,
+        injector = `
 const $id = "${id}";
 const $frontmatter = ${JSON.stringify(frontmatter)};
 `,
-      styles =
-        sfcBlocks?.styles.map(({ contentStripped, tagClose, tagOpen }) => ({
-          contentStripped: new MagicString(contentStripped),
-          tagClose,
-          tagOpen,
-        })) ?? [];
+        styles =
+          sfcBlocks?.styles.map(({ contentStripped, tagClose, tagOpen }) => ({
+            contentStripped: new MagicString(contentStripped),
+            tagClose,
+            tagOpen,
+          })) ?? [];
 
-    await Promise.all(
-      styles.map(
-        async ({ contentStripped }) =>
-          unoGenerator &&
-          transform(contentStripped, id, {
-            uno: unoGenerator,
-          } as UnocssPluginContext),
-      ),
-    );
+      await Promise.all(
+        styles.map(
+          async ({ contentStripped }) =>
+            uno &&
+            transform(contentStripped, id, { uno } as UnocssPluginContext),
+        ),
+      );
 
-    return loadModule(
-      `${
-        sfcBlocks?.template && frontmatter["attrs"]
-          ? `${sfcBlocks.template.tagOpen}<div${ssrRenderAttrs(frontmatter["attrs"] as Record<string, unknown>)}>${sfcBlocks.template.contentStripped}</div>${sfcBlocks.template.tagClose}`
-          : (sfcBlocks?.template?.content ?? "")
-      }
+      return loadModule(
+        `${env.sfcBlocks?.template?.content ?? ""}
 ${sfcBlocks?.script?.content ?? ""}
 ${
   sfcBlocks?.scriptSetup
@@ -161,6 +158,6 @@ ${styles
   )
   .join("\n")}
 `,
-      { scriptOptions },
-    );
-  });
+        { scriptOptions },
+      );
+    });
