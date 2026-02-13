@@ -1,3 +1,4 @@
+import type { TPage } from "@skaldapp/shared";
 import type { RouteRecordRaw, RouterScrollBehavior } from "vue-router";
 
 import { sharedStore } from "@skaldapp/shared";
@@ -24,8 +25,9 @@ import component from "@/views/PageView.vue";
 const app = createApp(vueApp),
   behavior = "smooth",
   top = 0,
-  { $nodes, kvNodes } = toRefs(sharedStore),
+  { $nodes, kvNodes, tree } = toRefs(sharedStore),
   { data, isFinished } = useFetch("./docs/index.json").json(),
+  { isRedirect } = sharedStore,
   { pathname } = new URL(document.baseURI);
 const history = createWebHistory(pathname),
   scrollBehavior: RouterScrollBehavior = ({ hash: el }, _from, savedPosition) =>
@@ -34,23 +36,28 @@ const history = createWebHistory(pathname),
 whenever(
   isFinished,
   async () => {
-    sharedStore.tree = data.value ?? [];
+    tree.value = data.value ?? [];
     await nextTick();
 
     const routes = [
         ...($nodes.value
-          .filter(
-            ({ $children, frontmatter: { template }, path }) =>
-              path !== undefined && (!template || !$children.length),
-          )
-          .flatMap(({ $branch, $prev, id: name, parent, to }) => {
-            const [last, ...rest] = [...$branch].reverse(),
-              path = parent?.frontmatter["template"] && !$prev ? parent.to : to;
-
+          .filter((node) => !isRedirect(node))
+          .flatMap((node) => {
+            const right: TPage[] = [node];
+            while (
+              right.length !==
+              right.push(
+                ...(right[right.length - 1]?.frontmatter["template"]
+                  ? (right[right.length - 1]?.children
+                      .filter(({ frontmatter: { hidden } }: TPage) => !hidden)
+                      .slice(0, 1) ?? [])
+                  : []),
+              )
+            );
+            right.shift();
+            const [last, ...rest] = [...node.$branch, ...right].reverse();
             return [
-              ...(parent?.frontmatter["template"] && !$prev
-                ? [{ path: to, redirect: parent.to }]
-                : []),
+              ...right.map(({ to }) => ({ path: to, redirect: node.to })),
               ...[
                 ...(last ? [last] : []),
                 ...rest.filter(({ frontmatter: { template } }) => template),
@@ -60,8 +67,8 @@ whenever(
                     props: { id },
                     ...(children.length ? { children } : undefined),
                     component,
-                    path: index === array.length - 1 ? path : "",
-                    ...(index ? undefined : { name }),
+                    path: index === array.length - 1 ? node.to : "",
+                    ...(index ? undefined : { name: node.id }),
                   },
                 ],
                 [],
@@ -71,6 +78,7 @@ whenever(
         { component: notFoundView, name: "404", path: "/:pathMatch(.*)*" },
       ],
       router = createRouter({ history, routes, scrollBehavior });
+
     app.use(router);
     await router.isReady();
     app.mount("#app");
