@@ -1,6 +1,5 @@
 import type { MarkdownItEnv } from "@mdit-vue/types";
-import type { UnocssPluginContext } from "@unocss/core";
-import type { RuntimeContext } from "@unocss/runtime";
+import type { UnocssPluginContext, UnoGenerator } from "@unocss/core";
 
 import { componentPlugin } from "@mdit-vue/plugin-component";
 import { frontmatterPlugin } from "@mdit-vue/plugin-frontmatter";
@@ -9,9 +8,7 @@ import { tocPlugin } from "@mdit-vue/plugin-toc";
 import { spoiler } from "@mdit/plugin-spoiler";
 import { tasklist } from "@mdit/plugin-tasklist";
 import { ElementTransform } from "@nolebase/markdown-it-element-transform";
-import presets from "@skaldapp/configs/uno/presets";
 import loadModule from "@skaldapp/loader-sfc";
-import initUnocssRuntime from "@unocss/runtime";
 import transformerDirectives from "@unocss/transformer-directives";
 import mk from "@vscode/markdown-it-katex";
 import { useFetch } from "@vueuse/core";
@@ -32,15 +29,16 @@ import { refractor } from "refractor";
 import twemoji from "twemoji";
 import { defineAsyncComponent } from "vue";
 
-let extractAll: null | RuntimeContext["extractAll"] = null,
-  toggleObserver: null | RuntimeContext["toggleObserver"] = null,
-  transformNextLinkCloseToken = false,
-  uno: null | RuntimeContext["uno"] = null;
+interface PromiseWithResolvers<T> {
+  promise: Promise<T>;
+  reject: (reason?: unknown) => void;
+  resolve: (value: PromiseLike<T> | T) => void;
+}
 
-const display = "inline-block",
-  extraProperties = { display },
-  html = true,
-  iconsOptions = { extraProperties },
+let transformNextLinkCloseToken = false,
+  uno: null | UnoGenerator = null;
+
+const html = true,
   inlineTemplate = true,
   linkify = true,
   typographer = true,
@@ -100,23 +98,13 @@ const display = "inline-block",
     .use(tocPlugin, { linkTag: "router-link" })
     .use(componentPlugin)
     .use(sfcPlugin),
-  ready = (runtime: RuntimeContext) => {
-    ({ extractAll, toggleObserver, uno } = runtime);
-  },
   scriptOptions = { inlineTemplate },
   { transform } = transformerDirectives();
-
-void initUnocssRuntime({
-  defaults: { presets: presets({ iconsOptions }) },
-  ready,
-});
 
 md.renderer.rules["emoji"] = (tokens, idx) =>
   tokens[idx] ? twemoji.parse(tokens[idx].content) : "";
 
-export const getExtractAll = () => extractAll,
-  getToggleObserver = () => toggleObserver,
-  module = (id: string) =>
+export const module = (id: string) =>
     defineAsyncComponent(async () => {
       const env: MarkdownItEnv = {},
         { data } = await useFetch(`./docs/${id}.md`).text();
@@ -160,4 +148,17 @@ ${styles
 `,
         { scriptOptions },
       );
+    }),
+  promises = new Map<string, PromiseWithResolvers<unknown>>(),
+  promiseWithResolvers = <T>() => {
+    let resolve!: PromiseWithResolvers<T>["resolve"];
+    let reject!: PromiseWithResolvers<T>["reject"];
+    const promise = new Promise<T>((res, rej) => {
+      resolve = res;
+      reject = rej;
     });
+    return { promise, reject, resolve };
+  },
+  setUno = (unoGenerator: UnoGenerator) => {
+    uno = unoGenerator;
+  };

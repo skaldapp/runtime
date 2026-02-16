@@ -1,7 +1,7 @@
 <template lang="pug">
 Head
   title Page Not Found
-.absolute.inset-0.grid.place-items-center
+.absolute.inset-0.grid.place-items-center(un-cloak)
   .text-center
     .text-9xl 404
     p Oops. Nothing here...
