@@ -89,7 +89,6 @@ const ready = async ({ extractAll, toggleObserver, uno }: RuntimeContext) => {
     scrollBehavior: RouterScrollBehavior = async (
       { hash: el, name: toName },
       { name: fromName },
-      savedPosition,
     ) => {
       if (fromName !== toName) {
         let promisesSize = 0;
@@ -110,7 +109,7 @@ const ready = async ({ extractAll, toggleObserver, uno }: RuntimeContext) => {
         toggleObserver(false);
       }
 
-      return { ...(savedPosition ?? (el ? { el } : { top })), behavior };
+      return { ...(el ? { el } : { top }), behavior };
     },
     router = createRouter({ history, routes, scrollBehavior });
 
