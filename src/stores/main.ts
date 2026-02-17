@@ -28,6 +28,7 @@ import sup from "markdown-it-sup";
 import { refractor } from "refractor";
 import twemoji from "twemoji";
 import { defineAsyncComponent } from "vue";
+import { ssrRenderAttrs } from "vue/server-renderer";
 
 interface PromiseWithResolvers<T> {
   promise: Promise<T>;
@@ -132,7 +133,11 @@ const $frontmatter = ${JSON.stringify(frontmatter)};
       );
 
       return loadModule(
-        `${env.sfcBlocks?.template?.content ?? ""}
+        `${
+          sfcBlocks?.template && frontmatter["attrs"]
+            ? `${sfcBlocks.template.tagOpen}<div${ssrRenderAttrs(frontmatter["attrs"] as Record<string, unknown>)}>${sfcBlocks.template.contentStripped}</div>${sfcBlocks.template.tagClose}`
+            : (sfcBlocks?.template?.content ?? "")
+        }
 ${sfcBlocks?.script?.content ?? ""}
 ${
   sfcBlocks?.scriptSetup

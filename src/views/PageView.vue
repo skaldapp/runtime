@@ -1,8 +1,5 @@
 <template lang="pug">
-div(
-  v-bind="{ id, ...(kvNodes[id]?.frontmatter['attrs'] instanceof Object && kvNodes[id]?.frontmatter['attrs']) }"
-)
-  component(:is, @vue:mounted="promises.get(id)?.resolve(undefined)")
+component(:is, @vue:mounted="promises.get(id)?.resolve(undefined)")
 </template>
 
 <script setup lang="ts">
