@@ -10,7 +10,7 @@ import { toReactive } from "@vueuse/core";
 import { jsonrepair } from "jsonrepair";
 
 import "@/style.css";
-import "automad-prism-themes/dist/prism-github.light-dark.css";
+import "automad-prism-themes/dist/prism-nord.css";
 import { ofetch } from "ofetch";
 import {
   AliasSortingPlugin,
