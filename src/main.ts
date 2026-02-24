@@ -35,58 +35,53 @@ const app = createApp(vueApp),
   history = createWebHistory(pathname),
   iconsOptions = { extraProperties },
   index = ofetch("./docs/index.json", { responseType: "text" }),
+  routes: RouteRecordRaw[] = [],
   top = 0,
-  { kvNodes, nodes, tree } = toRefs(sharedStore),
-  { removeHiddens } = sharedStore;
+  { isRedirect, LEAD_TRAIL_SLASH_RE } = sharedStore,
+  { kvNodes, tree } = toRefs(sharedStore);
+const getRoutes = (nodes: TPage[]): RouteRecordRaw[] =>
+    nodes.map(
+      ({
+        $children,
+        $parent,
+        $prev,
+        children: next,
+        frontmatter: { hidden, template },
+        id,
+        name,
+        parent,
+        path,
+        to: redirect,
+      }: TPage) => {
+        const children = [
+            ...(template || hidden || !$children.length
+              ? []
+              : [{ component, name: id, path: "", props: { id } }]),
+            ...getRoutes(next),
+          ],
+          redirected = isRedirect({ $parent, $prev } as TPage),
+          routePath = redirected ? "" : (name ?? "");
 
-const ready = async ({ extractAll, toggleObserver, uno }: RuntimeContext) => {
-  tree.value = JSON.parse(jsonrepair((await index) || "[{}]"));
-  await nextTick();
+        if (path !== undefined && redirect && redirected)
+          routes.unshift({
+            path: path.replace(LEAD_TRAIL_SLASH_RE, "/"),
+            redirect,
+          });
 
-  const routes = [
-      ...(removeHiddens(nodes.value, true).flatMap((node) => {
-        const right: TPage[] = [node];
+        return {
+          ...((!template || hidden) && $children.length
+            ? undefined
+            : { component, name: id, props: { id } }),
+          ...(children.length ? { children } : undefined),
+          path: parent ? routePath : "/",
+        };
+      },
+    ) as RouteRecordRaw[],
+  ready = async ({ extractAll, toggleObserver, uno }: RuntimeContext) => {
+    tree.value = JSON.parse(jsonrepair((await index) || "[{}]"));
+    await nextTick();
 
-        while (
-          right.length !==
-          right.push(
-            ...(right[right.length - 1]?.frontmatter["template"]
-              ? removeHiddens(right[right.length - 1]?.children ?? []).slice(
-                  0,
-                  1,
-                )
-              : []),
-          )
-        );
-        right.shift();
-
-        const [last, ...rest] = [
-          ...removeHiddens(node.branch),
-          ...right,
-        ].reverse();
-
-        return [
-          ...right.map(({ to }) => ({ path: to, redirect: node.to })),
-          ...[
-            ...(last ? [last] : []),
-            ...rest.filter(({ frontmatter: { template } }) => template),
-          ].reduce(
-            (children: object[], { id }, index, array) => [
-              {
-                props: { id },
-                ...(children.length ? { children } : undefined),
-                component,
-                path: index === array.length - 1 ? node.to : "",
-                ...(index ? undefined : { name: node.id }),
-              },
-            ],
-            [],
-          ),
-        ];
-      }) as RouteRecordRaw[]),
-      { component: notFoundView, name: "404", path: "/:pathMatch(.*)*" },
-    ],
-    scrollBehavior: RouterScrollBehavior = async (
+    const scrollBehavior: RouterScrollBehavior = async (
       { hash: el, name: toName },
       { name: fromName },
     ) => {
@@ -110,18 +105,27 @@ const ready = async ({ extractAll, toggleObserver, uno }: RuntimeContext) => {
       }
 
       return { ...(el ? { el } : { top }), behavior };
-    },
-    router = createRouter({ history, routes, scrollBehavior });
+    };
 
-  setUno(uno);
+    setUno(uno);
 
-  router.beforeEach(({ name: toName }, { name: fromName }) => {
-    if (toName !== fromName) toggleObserver(true);
-  });
+    routes.push(...getRoutes(tree.value), {
+      component: notFoundView,
+      name: "404",
+      path: "/:pathMatch(.*)*",
+    });
 
-  app.use(router);
-  app.mount("#app");
-};
+    const router = createRouter({ history, routes, scrollBehavior });
+
+    router.beforeEach(({ name: toName }, { name: fromName }) => {
+      if (toName !== fromName) toggleObserver(true);
+    });
+
+    app.use(router);
+    app.mount("#app");
+  };
+
+window.__vue_app__ = app;
 
 app
   .use(

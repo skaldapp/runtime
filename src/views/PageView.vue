@@ -1,5 +1,5 @@
 <template lang="pug">
-component(:is, @vue:mounted="promises.get(id)?.resolve(undefined)")
+AsyncComponent(@vue:mounted="promises.get(id)?.resolve(undefined)")
 </template>
 
 <script setup lang="ts">
@@ -13,7 +13,7 @@ import { module, promises, promiseWithResolvers } from "@/stores/main";
 
 const { id } = defineProps<{ id: string }>();
 
-const is = computed(() => module(id)),
+const AsyncComponent = computed(() => module(id)),
   { kvNodes } = toRefs(sharedStore);
 
 const input = computed(() => {
