@@ -11,6 +11,7 @@ import { jsonrepair } from "jsonrepair";
 
 import "@/style.css";
 import "automad-prism-themes/dist/prism-nord.css";
+import "@mdit/plugin-spoiler/style";
 import { ofetch } from "ofetch";
 import {
   AliasSortingPlugin,
