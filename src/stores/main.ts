@@ -4,8 +4,6 @@ import type { UnocssPluginContext, UnoGenerator } from "@unocss/core";
 import { componentPlugin } from "@mdit-vue/plugin-component";
 import { frontmatterPlugin } from "@mdit-vue/plugin-frontmatter";
 import { sfcPlugin } from "@mdit-vue/plugin-sfc";
-import { tocPlugin } from "@mdit-vue/plugin-toc";
-import { spoiler } from "@mdit/plugin-spoiler";
 import { tasklist } from "@mdit/plugin-tasklist";
 import { ElementTransform } from "@nolebase/markdown-it-element-transform";
 import loadModule from "@skaldapp/loader-sfc";
@@ -15,16 +13,7 @@ import { useFetch } from "@vueuse/core";
 import { toHtml } from "hast-util-to-html";
 import MagicString from "magic-string";
 import MarkdownIt from "markdown-it";
-import abbr from "markdown-it-abbr";
-import anchor from "markdown-it-anchor";
-import deflist from "markdown-it-deflist";
-import { full } from "markdown-it-emoji";
-import footnote from "markdown-it-footnote";
-import ins from "markdown-it-ins";
-import mark from "markdown-it-mark";
 import pluginMdc from "markdown-it-mdc";
-import sub from "markdown-it-sub";
-import sup from "markdown-it-sup";
 import { refractor } from "refractor";
 import twemoji from "twemoji";
 import { defineAsyncComponent } from "vue";
@@ -82,21 +71,10 @@ const html = true,
         }
       },
     })
-    .use(anchor)
-    .use(full)
-    .use(abbr)
-    .use(deflist)
-    .use(footnote)
-    .use(ins)
     .use(mk)
-    .use(mark)
-    .use(spoiler)
-    .use(sub)
-    .use(sup)
     .use(tasklist)
     .use(pluginMdc)
     .use(frontmatterPlugin)
-    .use(tocPlugin, { linkTag: "router-link" })
     .use(componentPlugin)
     .use(sfcPlugin),
   scriptOptions = { inlineTemplate },
