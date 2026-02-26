@@ -56,7 +56,6 @@
     "markdown-it-mdc": "^0.2.12",
     "ofetch": "^1.5.1",
     "refractor": "^5.0.0",
-    "twemoji": "^14.0.2",
     "unhead": "^2.1.9",
     "vue": "^3.5.29",
     "vue-router": "^5.0.3"

@@ -15,7 +15,6 @@ import MagicString from "magic-string";
 import MarkdownIt from "markdown-it";
 import pluginMdc from "markdown-it-mdc";
 import { refractor } from "refractor";
-import twemoji from "twemoji";
 import { defineAsyncComponent } from "vue";
 import { ssrRenderAttrs } from "vue/server-renderer";
 
@@ -79,9 +78,6 @@ const html = true,
     .use(sfcPlugin),
   scriptOptions = { inlineTemplate },
   { transform } = transformerDirectives();
-
-md.renderer.rules["emoji"] = (tokens, idx) =>
-  tokens[idx] ? twemoji.parse(tokens[idx].content) : "";
 
 export const module = (id: string) =>
     defineAsyncComponent(async () => {
