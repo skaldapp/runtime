@@ -7,8 +7,8 @@ import { sfcPlugin } from "@mdit-vue/plugin-sfc";
 import { tasklist } from "@mdit/plugin-tasklist";
 import { ElementTransform } from "@nolebase/markdown-it-element-transform";
 import loadModule from "@skaldapp/loader-sfc";
+import tml_plugin from "@traeblain/markdown-it-temml";
 import transformerDirectives from "@unocss/transformer-directives";
-import mk from "@vscode/markdown-it-katex";
 import { useFetch } from "@vueuse/core";
 import { toHtml } from "hast-util-to-html";
 import MagicString from "magic-string";
@@ -70,7 +70,7 @@ const html = true,
         }
       },
     })
-    .use(mk)
+    .use(tml_plugin)
     .use(tasklist)
     .use(pluginMdc)
     .use(frontmatterPlugin)

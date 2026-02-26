@@ -51,6 +51,7 @@ export default mergeConfig(
               "markdown",
               "ofetch",
               "sucrase",
+              "traeblain",
               "unocss",
               "vscode",
               "vue",

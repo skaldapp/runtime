@@ -1,5 +1,3 @@
-@import url("https://cdn.jsdelivr.net/npm/katex/dist/katex-swap.min.css");
-
 [v-cloak],
 [un-cloak] {
   display: none !important;
