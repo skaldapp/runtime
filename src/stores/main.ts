@@ -1,19 +1,23 @@
 import type { MarkdownItEnv } from "@mdit-vue/types";
 import type { UnocssPluginContext, UnoGenerator } from "@unocss/core";
 
+import comark from "@comark/markdown-it";
 import { componentPlugin } from "@mdit-vue/plugin-component";
 import { frontmatterPlugin } from "@mdit-vue/plugin-frontmatter";
 import { sfcPlugin } from "@mdit-vue/plugin-sfc";
-import { tasklist } from "@mdit/plugin-tasklist";
+import { tocPlugin } from "@mdit-vue/plugin-toc";
 import { ElementTransform } from "@nolebase/markdown-it-element-transform";
+import slugify from "@sindresorhus/slugify";
 import loadModule from "@skaldapp/loader-sfc";
-import tml_plugin from "@traeblain/markdown-it-temml";
+import temml from "@traeblain/markdown-it-temml";
 import transformerDirectives from "@unocss/transformer-directives";
 import { useFetch } from "@vueuse/core";
 import { toHtml } from "hast-util-to-html";
 import MagicString from "magic-string";
 import MarkdownIt from "markdown-it";
-import pluginMdc from "markdown-it-mdc";
+import anchor from "markdown-it-anchor";
+import { full as emoji } from "markdown-it-emoji";
+import MarkdownItCheckbox from "markdown-it-task-checkbox";
 import { refractor } from "refractor";
 import { defineAsyncComponent } from "vue";
 import { ssrRenderAttrs } from "vue/server-renderer";
@@ -70,14 +74,39 @@ const html = true,
         }
       },
     })
-    .use(tml_plugin)
-    .use(tasklist)
-    .use(pluginMdc)
+    .use(anchor, { slugify })
+    .use(emoji)
+    .use(MarkdownItCheckbox)
+    .use(comark)
+    .use(temml)
     .use(frontmatterPlugin)
+    .use(tocPlugin, { linkTag: "router-link" })
     .use(componentPlugin)
     .use(sfcPlugin),
   scriptOptions = { inlineTemplate },
   { transform } = transformerDirectives();
+
+md.core.ruler.before(
+  "github-task-lists",
+  "clean-mdc-before-task-list",
+  ({ tokens }) => {
+    tokens.forEach(({ children, type }, index, array) => {
+      if (
+        type === "inline" &&
+        children &&
+        children[0]?.type === "mdc_inline_span" &&
+        children[2]?.type === "mdc_inline_span" &&
+        [" ", "x", "X"].includes(children[1]?.content ?? "") &&
+        (array[index - 1]?.type === "list_item_open" ||
+          (array[index - 1]?.type === "paragraph_open" &&
+            array[index - 2]?.type === "list_item_open"))
+      ) {
+        children.splice(2, 1);
+        children.splice(0, 1);
+      }
+    });
+  },
+);
 
 export const module = (id: string) =>
     defineAsyncComponent(async () => {
