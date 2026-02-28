@@ -34,6 +34,7 @@ let transformNextLinkCloseToken = false,
 const html = true,
   inlineTemplate = true,
   linkify = true,
+  linkTag = "router-link",
   typographer = true,
   xhtmlOut = true,
   // eslint-disable-next-line sonarjs/disabled-auto-escaping
@@ -80,11 +81,22 @@ const html = true,
     .use(comark)
     .use(temml)
     .use(frontmatterPlugin)
-    .use(tocPlugin, { linkTag: "router-link" })
+    .use(tocPlugin, { linkTag })
     .use(componentPlugin)
     .use(sfcPlugin),
+  renderRuleImage = md.renderer.rules.image,
   scriptOptions = { inlineTemplate },
   { transform } = transformerDirectives();
+
+md.renderer.rules.image = (tokens, idx, options, env, self) => {
+  if (tokens.length === 1) {
+    const scale = parseFloat(tokens[idx]?.content ?? "");
+    if (!isNaN(scale))
+      tokens[idx]?.attrJoin("style", `zoom:${scale.toString()};`);
+    return self.renderToken(tokens, idx, options);
+  } else
+    return `<span>${renderRuleImage?.(tokens, idx, options, env, self) ?? self.renderToken(tokens, idx, options)}</span>`;
+};
 
 md.core.ruler.before(
   "github-task-lists",
