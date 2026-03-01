@@ -89,13 +89,19 @@ const html = true,
   { transform } = transformerDirectives();
 
 md.renderer.rules.image = (tokens, idx, options, env, self) => {
-  if (tokens.length === 1) {
-    const scale = parseFloat(tokens[idx]?.content ?? "");
-    if (!isNaN(scale))
-      tokens[idx]?.attrJoin("style", `zoom:${scale.toString()};`);
-    return self.renderToken(tokens, idx, options);
-  } else
-    return `<span>${renderRuleImage?.(tokens, idx, options, env, self) ?? self.renderToken(tokens, idx, options)}</span>`;
+  const scale = parseFloat(
+    (tokens.length === 1 ? tokens[idx]?.content : undefined) ?? "",
+  );
+  if (!isNaN(scale))
+    tokens[idx]?.attrJoin("style", `zoom:${scale.toString()};`);
+  tokens[idx]?.attrSet(
+    "data-type",
+    `image-${tokens.length > 1 ? "inline" : "block"}`,
+  );
+  return (
+    renderRuleImage?.(tokens, idx, options, env, self) ??
+    self.renderToken(tokens, idx, options)
+  );
 };
 
 md.core.ruler.before(
