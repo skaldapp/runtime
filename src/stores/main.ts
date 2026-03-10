@@ -96,7 +96,7 @@ md.renderer.rules.image = (tokens, idx, options, env, self) => {
     tokens[idx]?.attrJoin("style", `zoom:${scale.toString()};`);
   tokens[idx]?.attrSet(
     "data-type",
-    `image-${tokens.length > 1 ? "inline" : "block"}`,
+    `image-${tokens.length <= 2 && tokens[0]?.type === "image" && ["mdc_inline_props", undefined].includes(tokens[1]?.type) ? "block" : "inline"}`,
   );
   return (
     renderRuleImage?.(tokens, idx, options, env, self) ??

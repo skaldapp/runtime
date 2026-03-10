@@ -60,7 +60,7 @@ const getRoutes = (nodes: TPage[]): RouteRecordRaw[] =>
             ...getRoutes(next),
           ],
           redirected = isRedirect({ $parent, $prev } as TPage),
-          routePath = redirected ? "" : (name ?? "");
+          routePath = redirected ? "" : (name?.replace(/ /g, "_") ?? "");
 
         if (path !== undefined && redirect && redirected)
           routes.unshift({
