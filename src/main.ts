@@ -116,8 +116,11 @@ const getRoutes = (nodes: TPage[]): RouteRecordRaw[] =>
 
     const router = createRouter({ history, routes, scrollBehavior });
 
-    router.beforeEach(({ name: toName }, { name: fromName }) => {
-      if (toName !== fromName) toggleObserver(true);
+    router.beforeEach(({ name, path }, from) => {
+      const decodePath = decodeURI(path);
+
+      if (name !== from.name) toggleObserver(true);
+      return path !== decodePath ? decodePath : undefined;
     });
 
     app.use(router);
