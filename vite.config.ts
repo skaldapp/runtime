@@ -1,6 +1,5 @@
 import type { HtmlTagDescriptor } from "vite";
 
-import inject from "@rollup/plugin-inject";
 import config from "@skaldapp/configs/vite";
 import { readFileSync, writeFileSync } from "node:fs";
 import { defineConfig, mergeConfig } from "vite";
@@ -12,7 +11,6 @@ const crossorigin = true,
   file = "",
   isStaticEntry = true,
   manifest = true,
-  minify = "terser",
   path = "./dist/.vite/manifest.json",
   targets = ["es-module-shims", ...external].map((name, i) => ({
     dest,
@@ -38,29 +36,43 @@ export default mergeConfig(
   defineConfig({
     build: {
       manifest,
-      minify,
-      rollupOptions: {
+      rolldownOptions: {
         external,
         output: {
-          manualChunks(id) {
-            const chunks = id.split("/"),
-              index = -~chunks.indexOf("node_modules");
-            chunks[0] = "";
-            const [name] = chunks[index].replace(/^@/, "").split("-");
-            return [
-              "markdown",
-              "ofetch",
-              "sucrase",
-              "traeblain",
-              "unocss",
-              "vscode",
-              "vue",
-            ].includes(name)
-              ? name
-              : null;
+          codeSplitting: {
+            groups: [
+              {
+                name: "markdown",
+                test: /node_modules\/markdown/,
+              },
+              {
+                name: "sucrase",
+                test: /node_modules\/sucrase/,
+              },
+              {
+                name: "vue",
+                test: /node_modules\/@vue/,
+              },
+              {
+                name: "unocss",
+                test: /node_modules\/@unocss/,
+              },
+              {
+                name: "temml",
+                test: /node_modules\/temml/,
+              },
+              {
+                name: "esprima",
+                test: /node_modules\/esprima/,
+              },
+              {
+                name: "ofetch",
+                test: /node_modules\/ofetch/,
+              },
+            ],
           },
         },
-        plugins: [inject({ Buffer: ["buffer", "Buffer"] })],
+        transform: { inject: { Buffer: ["buffer", "Buffer"] } },
       },
     },
     plugins: [
