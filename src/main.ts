@@ -43,8 +43,7 @@ const getRoutes = (nodes: TPage[]): RouteRecordRaw[] =>
     nodes.map(
       ({
         $children,
-        $parent,
-        $prev,
+        branch,
         children: next,
         frontmatter: { hidden, template },
         id,
@@ -59,7 +58,7 @@ const getRoutes = (nodes: TPage[]): RouteRecordRaw[] =>
               : [{ component, name: id, path: "", props: { id } }]),
             ...getRoutes(next),
           ],
-          redirected = isRedirect({ $parent, $prev } as TPage),
+          redirected = isRedirect(branch),
           routePath = redirected ? "" : (name?.replace(/ /g, "_") ?? "");
 
         if (path !== undefined && redirect && redirected)
