@@ -18,7 +18,7 @@ const crossorigin = true,
     name,
     rename(fileName: string, fileExtension: string) {
       if (targets[i].file)
-        return targets[i].file.split("/").pop() ?? targets[i].file;
+        return `../../../${targets[i].file.split("/").pop() ?? targets[i].file}`;
       else {
         const { version } = JSON.parse(
           readFileSync(`node_modules/${name}/package.json`).toString(),
