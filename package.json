@@ -42,8 +42,8 @@
     "@mdit-vue/plugin-toc": "^3.0.2",
     "@nolebase/markdown-it-element-transform": "^2.18.2",
     "@sindresorhus/slugify": "^3.0.0",
-    "@skaldapp/loader-sfc": "^2.4.36",
-    "@skaldapp/shared": "^1.2.60",
+    "@skaldapp/loader-sfc": "^2.4.37",
+    "@skaldapp/shared": "^1.2.61",
     "@traeblain/markdown-it-temml": "^1.0.1",
     "@unhead/vue": "^2.1.12",
     "@unocss/runtime": "^66.6.7",
@@ -51,7 +51,7 @@
     "@vueuse/components": "^14.2.1",
     "@vueuse/core": "^14.2.1",
     "automad-prism-themes": "^0.3.7",
-    "comark": "^0.0.1",
+    "comark": "^0.1.0",
     "hast-util-to-html": "^9.0.5",
     "jsonrepair": "^3.13.3",
     "magic-string": "^0.30.21",
@@ -68,14 +68,14 @@
   },
   "devDependencies": {
     "@mdit-vue/types": "^3.0.2",
-    "@skaldapp/configs": "^1.2.75",
+    "@skaldapp/configs": "^1.2.78",
     "@types/markdown-it-emoji": "^3.0.1",
     "@types/node": "^25.5.0",
     "@unocss/core": "^66.6.7",
     "buffer": "^6.0.3",
     "es-module-shims": "^2.8.0",
     "eslint": "^10.1.0",
-    "vite": "^8.0.1",
+    "vite": "^8.0.2",
     "vite-plugin-static-copy": "^4.0.0"
   }
 }
