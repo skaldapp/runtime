@@ -10,7 +10,6 @@ import { toReactive } from "@vueuse/core";
 import { jsonrepair } from "jsonrepair";
 
 import "@/style.css";
-import "temml/dist/Temml-Local.css";
 import "automad-prism-themes/dist/prism-nord.css";
 import { ofetch } from "ofetch";
 import {
