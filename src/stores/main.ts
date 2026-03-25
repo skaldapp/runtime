@@ -1,7 +1,8 @@
 import type { MarkdownItEnv } from "@mdit-vue/types";
 import type { UnocssPluginContext, UnoGenerator } from "@unocss/core";
+import type { MarkdownExit, Token } from "markdown-exit";
 
-import comark from "@comark/markdown-it";
+import MarkdownItMdc from "@comark/markdown-it";
 import { componentPlugin } from "@mdit-vue/plugin-component";
 import { frontmatterPlugin } from "@mdit-vue/plugin-frontmatter";
 import { sfcPlugin } from "@mdit-vue/plugin-sfc";
@@ -12,12 +13,12 @@ import loadModule from "@skaldapp/loader-sfc";
 import temml from "@traeblain/markdown-it-temml";
 import transformerDirectives from "@unocss/transformer-directives";
 import { useFetch } from "@vueuse/core";
+import comarkEmoji from "comark/plugins/emoji";
+import comarkTaskList from "comark/plugins/task-list";
 import { toHtml } from "hast-util-to-html";
 import MagicString from "magic-string";
-import MarkdownIt from "markdown-it";
+import { createMarkdownExit } from "markdown-exit";
 import anchor from "markdown-it-anchor";
-import { full as emoji } from "markdown-it-emoji";
-import MarkdownItCheckbox from "markdown-it-task-checkbox";
 import { refractor } from "refractor";
 import { defineAsyncComponent } from "vue";
 import { ssrRenderAttrs } from "vue/server-renderer";
@@ -37,8 +38,7 @@ const html = true,
   linkTag = "router-link",
   typographer = true,
   xhtmlOut = true,
-  // eslint-disable-next-line sonarjs/disabled-auto-escaping
-  md: MarkdownIt = MarkdownIt({
+  md: MarkdownExit = createMarkdownExit({
     highlight: (code, lang) => {
       const language = lang.toLowerCase(),
         classAttr = language && ` class="language-${language}"`;
@@ -53,8 +53,8 @@ const html = true,
     typographer,
     xhtmlOut,
   })
-    .use(ElementTransform, {
-      transform(token) {
+    .use(ElementTransform as never, {
+      transform(token: Token) {
         switch (token.type) {
           case "link_close":
             if (transformNextLinkCloseToken) {
@@ -75,18 +75,20 @@ const html = true,
         }
       },
     })
-    .use(anchor, { slugify })
-    .use(emoji)
-    .use(MarkdownItCheckbox)
-    .use(comark)
+    .use(anchor as never, { slugify })
+    .use(MarkdownItMdc)
     .use(temml)
-    .use(frontmatterPlugin)
-    .use(tocPlugin, { linkTag })
-    .use(componentPlugin)
-    .use(sfcPlugin),
+    .use(frontmatterPlugin as never)
+    .use(tocPlugin as never, { linkTag })
+    .use(componentPlugin as never)
+    .use(sfcPlugin as never),
   renderRuleImage = md.renderer.rules.image,
   scriptOptions = { inlineTemplate },
   { transform } = transformerDirectives();
+
+[comarkTaskList(), comarkEmoji()].forEach(({ markdownItPlugins }) => {
+  markdownItPlugins?.forEach((plugin) => md.use(plugin as never));
+});
 
 md.renderer.rules.image = (tokens, idx, options, env, self) => {
   const scale = parseFloat(
@@ -103,28 +105,6 @@ md.renderer.rules.image = (tokens, idx, options, env, self) => {
     self.renderToken(tokens, idx, options)
   );
 };
-
-md.core.ruler.before(
-  "github-task-lists",
-  "clean-mdc-before-task-list",
-  ({ tokens }) => {
-    tokens.forEach(({ children, type }, index, array) => {
-      if (
-        type === "inline" &&
-        children &&
-        children[0]?.type === "mdc_inline_span" &&
-        children[2]?.type === "mdc_inline_span" &&
-        [" ", "x", "X"].includes(children[1]?.content ?? "") &&
-        (array[index - 1]?.type === "list_item_open" ||
-          (array[index - 1]?.type === "paragraph_open" &&
-            array[index - 2]?.type === "list_item_open"))
-      ) {
-        children.splice(2, 1);
-        children.splice(0, 1);
-      }
-    });
-  },
-);
 
 export const module = (id: string) =>
     defineAsyncComponent(async () => {
