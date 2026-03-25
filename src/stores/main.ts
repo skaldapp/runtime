@@ -10,10 +10,10 @@ import { tocPlugin } from "@mdit-vue/plugin-toc";
 import { ElementTransform } from "@nolebase/markdown-it-element-transform";
 import slugify from "@sindresorhus/slugify";
 import loadModule from "@skaldapp/loader-sfc";
-import temml from "@traeblain/markdown-it-temml";
 import transformerDirectives from "@unocss/transformer-directives";
 import { useFetch } from "@vueuse/core";
 import comarkEmoji from "comark/plugins/emoji";
+import math, { renderMath } from "comark/plugins/math";
 import comarkTaskList from "comark/plugins/task-list";
 import { toHtml } from "hast-util-to-html";
 import MagicString from "magic-string";
@@ -77,7 +77,6 @@ const html = true,
     })
     .use(anchor as never, { slugify })
     .use(MarkdownItMdc)
-    .use(temml)
     .use(frontmatterPlugin as never)
     .use(tocPlugin as never, { linkTag })
     .use(componentPlugin as never)
@@ -86,10 +85,14 @@ const html = true,
   scriptOptions = { inlineTemplate },
   { transform } = transformerDirectives();
 
-[comarkTaskList(), comarkEmoji()].forEach(({ markdownItPlugins }) => {
+[comarkTaskList(), comarkEmoji(), math()].forEach(({ markdownItPlugins }) => {
   markdownItPlugins?.forEach((plugin) => md.use(plugin as never));
 });
 
+md.renderer.rules["math_inline"] = (tokens, idx) =>
+  renderMath(tokens[idx]?.content ?? "", tokens[idx]?.meta?.display);
+md.renderer.rules["math_block"] = (tokens, idx) =>
+  renderMath(tokens[idx]?.content ?? "", true);
 md.renderer.rules.image = (tokens, idx, options, env, self) => {
   const scale = parseFloat(
     (tokens.length === 1 ? tokens[idx]?.content : undefined) ?? "",
