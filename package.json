@@ -42,8 +42,8 @@
     "@mdit-vue/plugin-toc": "^3.0.2",
     "@nolebase/markdown-it-element-transform": "^2.18.2",
     "@sindresorhus/slugify": "^3.0.0",
-    "@skaldapp/loader-sfc": "^2.4.37",
-    "@skaldapp/shared": "^1.2.61",
+    "@skaldapp/loader-sfc": "^2.4.38",
+    "@skaldapp/shared": "^1.2.62",
     "@traeblain/markdown-it-temml": "^1.0.1",
     "@unhead/vue": "^2.1.12",
     "@unocss/runtime": "^66.6.7",
@@ -63,7 +63,7 @@
     "refractor": "^5.0.0",
     "temml": "^0.13.2",
     "unhead": "^2.1.12",
-    "vue": "^3.5.30",
+    "vue": "^3.5.31",
     "vue-router": "^5.0.4"
   },
   "devDependencies": {
