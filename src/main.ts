@@ -37,6 +37,7 @@ const app = createApp(vueApp),
   iconsOptions = { extraProperties },
   index = ofetch("./docs/index.json", { responseType: "text" }),
   routes: RouteRecordRaw[] = [],
+  top = 0,
   { isRedirect, LEAD_TRAIL_SLASH_RE } = sharedStore,
   { kvNodes, tree } = toRefs(sharedStore);
 const getRoutes = (nodes: TPage[]): RouteRecordRaw[] =>
@@ -102,7 +103,7 @@ const getRoutes = (nodes: TPage[]): RouteRecordRaw[] =>
         }
         toggleObserver(false);
       }
-      return el ? { behavior, el } : false;
+      return { ...(el ? { el } : { top }), behavior };
     };
 
     setUno(uno);
