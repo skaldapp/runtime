@@ -58,8 +58,8 @@ export default mergeConfig(
                 test: /node_modules\/@unocss/,
               },
               {
-                name: "temml",
-                test: /node_modules\/temml/,
+                name: "katex",
+                test: /node_modules\/katex/,
               },
               {
                 name: "esprima",
