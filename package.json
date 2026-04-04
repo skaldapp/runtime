@@ -42,8 +42,8 @@
     "@mdit-vue/plugin-toc": "^3.0.2",
     "@nolebase/markdown-it-element-transform": "^2.18.2",
     "@sindresorhus/slugify": "^3.0.0",
-    "@skaldapp/loader-sfc": "^2.4.42",
-    "@skaldapp/shared": "^1.2.66",
+    "@skaldapp/loader-sfc": "^2.4.43",
+    "@skaldapp/shared": "^1.2.67",
     "@unhead/vue": "^2.1.12",
     "@unocss/runtime": "^66.6.7",
     "@unocss/transformer-directives": "^66.6.7",
@@ -60,19 +60,19 @@
     "ofetch": "^1.5.1",
     "refractor": "^5.0.0",
     "unhead": "^2.1.12",
-    "vue": "^3.5.31",
+    "vue": "^3.5.32",
     "vue-router": "^5.0.4"
   },
   "devDependencies": {
     "@mdit-vue/types": "^3.0.2",
-    "@skaldapp/configs": "^1.2.83",
+    "@skaldapp/configs": "^1.2.84",
     "@types/markdown-it-emoji": "^3.0.1",
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.5.2",
     "@unocss/core": "^66.6.7",
     "buffer": "^6.0.3",
     "es-module-shims": "^2.8.0",
-    "eslint": "^10.1.0",
+    "eslint": "^10.2.0",
     "vite": "^8.0.3",
-    "vite-plugin-static-copy": "^4.0.0"
+    "vite-plugin-static-copy": "^4.0.1"
   }
 }
