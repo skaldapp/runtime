@@ -17,14 +17,14 @@ const crossorigin = true,
     file,
     name,
     rename(fileName: string, fileExtension: string) {
-      if (targets[i].file)
+      if (targets[i]?.file)
         return `../../../${targets[i].file.split("/").pop() ?? targets[i].file}`;
       else {
         const { version } = JSON.parse(
           readFileSync(`node_modules/${name}/package.json`).toString(),
         ) as { version: string };
         const file = `${fileName}-${version}.${fileExtension}`;
-        targets[i].file = `${targets[i].dest}/${file}`;
+        if (targets[i]) targets[i].file = `${targets[i].dest}/${file}`;
         return file;
       }
     },
@@ -106,7 +106,7 @@ export default mergeConfig(
             );
           return [
             {
-              children: `navigator.userAgent.toLowerCase().includes("firefox")&&document.head.appendChild(Object.assign(document.createElement("script"),{src:"./assets/${targets[0].rename(targets[0].name, "js")}"}))`,
+              children: `navigator.userAgent.toLowerCase().includes("firefox")&&document.head.appendChild(Object.assign(document.createElement("script"),{src:"./assets/${targets[0]?.rename(targets[0].name, "js") ?? ""}"}))`,
               injectTo: "head-prepend",
               tag: "script",
             },
