@@ -18,6 +18,7 @@ import {
   FlatMetaPlugin,
   InferSeoMetaPlugin,
   TemplateParamsPlugin,
+  MinifyPlugin,
 } from "unhead/plugins";
 import { createApp, nextTick, toRefs } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
@@ -137,6 +138,7 @@ app
         FlatMetaPlugin,
         CanonicalPlugin({}),
         InferSeoMetaPlugin(),
+        MinifyPlugin(),
       ],
     }),
   )

@@ -19,9 +19,9 @@ const AsyncComponent = computed(() => module(id)),
 const input = computed(() => {
   if (kvNodes.value[id]) {
     const {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        frontmatter: { attrs, hidden, icon, template, ...head },
-      } = kvNodes.value[id],
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      frontmatter: { attrs, hidden, icon, template, ...head },
+    } = kvNodes.value[id],
       {
         base, // eslint-disable-line @typescript-eslint/no-unused-vars
         bodyAttrs,
@@ -53,7 +53,7 @@ const input = computed(() => {
   } else return undefined;
 });
 
-useHead(input, { mode: "client" });
+useHead(input);
 
 watchEffect(() => {
   promises.set(id, promiseWithResolvers());
