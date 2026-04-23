@@ -127,12 +127,11 @@ export default mergeConfig(
               tag: "script",
             },
             ...Object.values(imports).map(
-              (href) =>
-                ({
-                  attrs: { crossorigin, href, rel: "modulepreload" },
-                  injectTo: "head",
-                  tag: "link",
-                }) as HtmlTagDescriptor,
+              (href): HtmlTagDescriptor => ({
+                attrs: { crossorigin, href, rel: "modulepreload" },
+                injectTo: "head",
+                tag: "link",
+              }),
             ),
           ];
         },

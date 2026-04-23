@@ -17,8 +17,8 @@ import {
   CanonicalPlugin,
   FlatMetaPlugin,
   InferSeoMetaPlugin,
-  TemplateParamsPlugin,
   MinifyPlugin,
+  TemplateParamsPlugin,
 } from "unhead/plugins";
 import { createApp, nextTick, toRefs } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
@@ -76,7 +76,7 @@ const getRoutes = (nodes: TPage[]): RouteRecordRaw[] =>
           path: parent ? routePath : "/",
         };
       },
-    ) as RouteRecordRaw[],
+    ),
   ready = async ({ extractAll, toggleObserver, uno }: RuntimeContext) => {
     tree.value = JSON.parse(jsonrepair((await index) || "[{}]"));
     await nextTick();
