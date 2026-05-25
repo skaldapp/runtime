@@ -19,26 +19,34 @@ const AsyncComponent = computed(() => module(id)),
 const input = computed(() => {
   if (kvNodes.value[id]) {
     const {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        frontmatter: { attrs, hidden, icon, template, ...head },
-      } = kvNodes.value[id],
-      {
-        base, // eslint-disable-line @typescript-eslint/no-unused-vars
-        bodyAttrs,
-        htmlAttrs,
-        link,
-        meta,
-        noscript,
-        script,
-        style,
-        templateParams,
-        title,
-        titleTemplate,
-        ..._flatMeta
-      } = head as SerializableHead;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      frontmatter: { attrs, hidden, icon, template, ...head },
+    } = kvNodes.value[id];
+    const {
+      base, // eslint-disable-line @typescript-eslint/no-unused-vars
+      bodyAttrs,
+      htmlAttrs,
+      link,
+      meta,
+      noscript,
+      script,
+      style,
+      templateParams,
+      title,
+      titleTemplate,
+      ..._flatMeta
+    } = head as SerializableHead;
+    const { keywords, ...flatMeta } = _flatMeta as Record<string, unknown> & {
+      keywords?: string | string[];
+    };
 
     return {
-      _flatMeta,
+      _flatMeta: {
+        ...flatMeta,
+        ...(keywords && {
+          keywords: Array.isArray(keywords) ? keywords.join(",") : keywords,
+        }),
+      },
       ...(bodyAttrs && { bodyAttrs }),
       ...(htmlAttrs && { htmlAttrs }),
       link,
