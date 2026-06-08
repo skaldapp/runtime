@@ -1,17 +1,22 @@
 {
-  "editor.bracketPairColorization.enabled": true,
-  "editor.guides.bracketPairs": true,
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": ["source.fixAll.eslint"],
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": ["source.fixAll.eslint"],
+  "eslint.validate": ["typescript", "vue", "json"],
   "js/ts.tsdk.path": "node_modules/typescript/lib",
-  "git.followTagsWhenSync": true,
-  "cSpell.language": "en,ru",
-  "Codegeex.RepoIndex": true,
-  "Codegeex.CommitMessage.LanguagePreference": "English",
-  "Codegeex.Chat.LanguagePreference": "English",
-  "Codegeex.Comment.LanguagePreference": "English",
-  "Codegeex.SidebarUI.LanguagePreference": "English",
-  "Codegeex.CommitMessageStyle": "ConventionalCommits"
+  "cSpell.words": [
+    "automad",
+    "Bruwes",
+    "comark",
+    "frontmatter",
+    "jsonrepair",
+    "katex",
+    "mdit",
+    "nolebase",
+    "ofetch",
+    "sindresorhus",
+    "skaldapp",
+    "unhead",
+    "unocss",
+    "vueuse"
+  ]
 }
