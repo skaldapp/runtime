@@ -1,5 +1,6 @@
 {
   "$schema": "https://www.schemastore.org/tsconfig",
   "compilerOptions": { "noEmit": true },
-  "extends": ["@skaldapp/configs/tsconfig"]
+  "extends": ["@skaldapp/configs/tsconfig"],
+  "include": ["**/*.ts", "**/*.vue"]
 }
