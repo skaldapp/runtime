@@ -42,6 +42,10 @@ export default mergeConfig(
           codeSplitting: {
             groups: [
               {
+                name: "ajv",
+                test: /node_modules\/ajv/,
+              },
+              {
                 name: "markdown",
                 test: /node_modules\/markdown/,
               },
@@ -50,8 +54,8 @@ export default mergeConfig(
                 test: /node_modules\/sucrase/,
               },
               {
-                name: "vue",
-                test: /node_modules\/@vue/,
+                name: "compiler-sfc",
+                test: /node_modules\/@vue\/compiler-sfc/,
               },
               {
                 name: "unocss",
