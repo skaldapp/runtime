@@ -16,11 +16,11 @@ import comarkEmoji from "comark/plugins/emoji";
 import math, { renderMath } from "comark/plugins/math";
 import comarkTaskList from "comark/plugins/task-list";
 import { toHtml } from "hast-util-to-html";
-import MagicString from "magic-string";
+import magicString from "magic-string";
 import { createMarkdownExit } from "markdown-exit";
 import anchor from "markdown-it-anchor";
 import { refractor } from "refractor";
-import { defineAsyncComponent } from "vue";
+import { defineAsyncComponent, ref } from "vue";
 import { ssrRenderAttrs } from "vue/server-renderer";
 
 interface PromiseWithResolvers<T> {
@@ -109,7 +109,8 @@ md.renderer.rules.image = (tokens, idx, options, env, self) => {
   );
 };
 
-export const module = (id: string) =>
+export const curId = ref(""),
+  module = (id: string) =>
     defineAsyncComponent(async () => {
       const env: MarkdownItEnv = {},
         { data } = await useFetch(`./docs/${id}.md`).text();
@@ -123,7 +124,7 @@ const $frontmatter = ${JSON.stringify(frontmatter)};
 `,
         styles =
           sfcBlocks?.styles.map(({ contentStripped, tagClose, tagOpen }) => ({
-            contentStripped: new MagicString(contentStripped),
+            contentStripped: new magicString(contentStripped),
             tagClose,
             tagOpen,
           })) ?? [];
