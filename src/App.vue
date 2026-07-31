@@ -9,13 +9,13 @@ import type { SerializableHead } from "unhead/types";
 import { sharedStore } from "@skaldapp/shared";
 import { useHead } from "@unhead/vue";
 import { computed, toRefs } from "vue";
+import { useRoute } from "vue-router";
 
-import { curId } from "@/stores/main";
-
-const { kvNodes } = toRefs(sharedStore);
+const route = useRoute(),
+  { kvNodes } = toRefs(sharedStore);
 
 const input = computed(() => {
-  const node = kvNodes.value[curId.value];
+  const node = kvNodes.value[route.name?.toString() ?? ""];
   if (node) {
     const {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

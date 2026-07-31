@@ -20,7 +20,7 @@ import magicString from "magic-string";
 import { createMarkdownExit } from "markdown-exit";
 import anchor from "markdown-it-anchor";
 import { refractor } from "refractor";
-import { defineAsyncComponent, ref } from "vue";
+import { defineAsyncComponent } from "vue";
 import { ssrRenderAttrs } from "vue/server-renderer";
 
 interface PromiseWithResolvers<T> {
@@ -109,8 +109,7 @@ md.renderer.rules.image = (tokens, idx, options, env, self) => {
   );
 };
 
-export const curId = ref(""),
-  module = (id: string) =>
+export const module = (id: string) =>
     defineAsyncComponent(async () => {
       const env: MarkdownItEnv = {},
         { data } = await useFetch(`./docs/${id}.md`).text();
