@@ -15,11 +15,10 @@ import { useFetch } from "@vueuse/core";
 import comarkEmoji from "comark/plugins/emoji";
 import math, { renderMath } from "comark/plugins/math";
 import comarkTaskList from "comark/plugins/task-list";
-import { toHtml } from "hast-util-to-html";
 import magicString from "magic-string";
 import { createMarkdownExit } from "markdown-exit";
 import anchor from "markdown-it-anchor";
-import { refractor } from "refractor";
+import { codeToHtml, detectLanguage } from "rangi";
 import { defineAsyncComponent } from "vue";
 import { ssrRenderAttrs } from "vue/server-renderer";
 
@@ -39,15 +38,8 @@ const html = true,
   typographer = true,
   xhtmlOut = true,
   md: MarkdownExit = createMarkdownExit({
-    highlight: (code, lang) => {
-      const language = lang.toLowerCase(),
-        classAttr = language && ` class="language-${language}"`;
-      return `<pre><code${classAttr}>${
-        refractor.registered(language)
-          ? toHtml(refractor.highlight(code, language))
-          : md.utils.escapeHtml(code)
-      }</code></pre>`;
-    },
+    highlight: (code, lang) =>
+      `<pre class="not-prose">${codeToHtml(code, { lang: lang ? lang.toLowerCase() : detectLanguage(code) })}</pre>`,
     html,
     linkify,
     typographer,
