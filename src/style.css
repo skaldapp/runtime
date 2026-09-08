@@ -9,6 +9,23 @@ img[data-type="image-block"] {
   margin-left: auto;
   margin-right: auto;
 }
+
 img[data-type="image-inline"] {
   display: inline-block;
+}
+
+:root {
+  color-scheme: light;
+}
+
+:root.dark {
+  color-scheme: dark;
+}
+
+[class|="shj"] {
+  color-scheme: light !important;
+}
+
+:root.dark [class|="shj"] {
+  color-scheme: dark !important;
 }
